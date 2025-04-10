@@ -38,6 +38,10 @@
                 <input type="number" id="totalVotes" name="totalVotes" required class="mt-1 block w-full border border-gray-300 p-2 rounded" placeholder="Enter total votes">
             </div>
             <div class="mb-4">
+                <label for="constituencyId" class="block text-gray-700">Constituency Id</label>
+                <input type="number" id="totalVotes" name="constituencyId" required class="mt-1 block w-full border border-gray-300 p-2 rounded" placeholder="Enter Id">
+            </div>
+            <div class="mb-4">
                 <label for="candidates" class="block text-gray-700">Select Candidates</label>
                 <select id="candidates" name="candidates[]" multiple class="choices-multiple-select mt-1 block w-full border border-gray-300 p-2 rounded">
                     <% candidates.forEach(candidate => { %>
@@ -69,6 +73,7 @@
             const name = document.getElementById('name').value;
             const state = document.getElementById('state').value;
             const totalVotes = document.getElementById('totalVotes').value;
+            const constituencyId = document.getElementById('constituencyId').value;
 
             // Gather selected candidates
             const selectedCandidates = Array.from(document.getElementById('candidates').selectedOptions).map(option => option.value);
@@ -78,7 +83,8 @@
                 name,
                 state,
                 totalVotes: Number(totalVotes),
-                candidates: selectedCandidates // This will send an array of selected candidate IDs
+                candidates: selectedCandidates,  // This will send an array of selected candidate IDs
+		constituencyId
             };
 
             // Send the form data using fetch

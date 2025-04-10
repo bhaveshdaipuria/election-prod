@@ -205,12 +205,6 @@ router.post("/", isAdmin, upload.single("image"), async (req, res, next) => {
 		const hotCandidate = req.body.hotCandidate === "true";
 		console.log(req.body, hotCandidate);
 
-		let constituencyIds = Array.isArray(req.body.constituency)
-			? req.body.constituency
-			: req.body.constituency
-				? [req.body.constituency]
-				: [];
-
 		const candidateData = {
 			name: req.body.name,
 			party: req.body.party,
@@ -218,18 +212,15 @@ router.post("/", isAdmin, upload.single("image"), async (req, res, next) => {
 			hotCandidate: hotCandidate, // Now it is a boolean
 			gender: req.body.gender,
 			image: req.file ? getFullImagePath(req, "candidates") : null,
-			constituency: constituencyIds, // Now it's already an array
+			constituency: req.body.constituency,
 		};
 
-		const validConstituencies = [];
-
-		// Validate each constituency ID
-		for (const id of candidateData.constituency) {
-			const existingConstituency = await Constituency.findById(id);
-			if (!existingConstituency) {
-				return res.status(404).send(`Constituency with ID ${id} is invalid`);
-			}
-			validConstituencies.push(existingConstituency._id); // Store valid constituency IDs
+		// Validate constituency ID
+		const existingConstituency = await Constituency.findById(
+			candidateData.constituency,
+		);
+		if (!existingConstituency) {
+			return res.status(404).send(`Constituency with ID ${id} is invalid`);
 		}
 
 		const candidate = new Candidate({
@@ -240,17 +231,17 @@ router.post("/", isAdmin, upload.single("image"), async (req, res, next) => {
 			hotCandidate: candidateData.hotCandidate, // Boolean value
 			gender: candidateData.gender,
 			image: candidateData.image,
-			constituency: validConstituencies, // Store valid constituencies
+			constituency: candidateData.constituency, // Store valid constituencies
 		});
 
 		const newCandidate = await candidate.save();
 
 		// Update each constituency with the new candidate's ID
-		for (const id of validConstituencies) {
-			const constituency = await Constituency.findById(id);
-			constituency.candidates.push(newCandidate._id); // Add new candidate ID to the constituency's candidates array
-			await constituency.save();
-		}
+		const constituency = await Constituency.findById(
+			candidateData.constituency,
+		);
+		constituency.candidates.push(newCandidate._id); // Add new candidate ID to the constituency's candidates array
+		await constituency.save();
 
 		await redis.clearAllKeys();
 
