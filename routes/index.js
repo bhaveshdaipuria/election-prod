@@ -166,7 +166,7 @@ async function getCandidateElectionDetails(
 
   // Execute the aggregation
   const candidateElections =
-    await CandidateElectioModel.aggregate(pipeline).limit(20);
+    await CandidateElectioModel.aggregate(pipeline);
 
   return candidateElections;
 }
@@ -1035,5 +1035,212 @@ router.get(
     }
   },
 );
+
+router.get("/election/candidates", async (req, res) => {
+  try {
+    const { state, constituencyId, year } = req.query;
+
+    // Validate required parameters
+    if (!state || !year) {
+      return res.status(400).json({
+        success: false,
+        message: "State and year are required parameters",
+      });
+    }
+
+    // Convert year to number
+    const yearNum = parseInt(year);
+    const constituencyIdNum = constituencyId ? parseInt(constituencyId) : null;
+
+    // Aggregation pipeline
+    const pipeline = [
+      // Stage 1: Match the election first
+      {
+        $lookup: {
+          from: "tempelections",
+          let: { electionState: state, electionYear: yearNum },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$state", "$$electionState"] },
+                    { $eq: ["$year", "$$electionYear"] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "election",
+        },
+      },
+      // Unwind the election array (since lookup returns an array)
+      { $unwind: "$election" },
+
+      // Stage 2: Handle constituency if provided
+      ...(constituencyIdNum
+        ? [
+            {
+              $lookup: {
+                from: "constituencies",
+                let: { constId: constituencyIdNum, constState: state },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          { $eq: ["$constituencyId", "$$constId"] },
+                          { $eq: ["$state", "$$constState"] },
+                        ],
+                      },
+                    },
+                  },
+                ],
+                as: "constituency",
+              },
+            },
+            { $unwind: "$constituency" },
+            {
+              $match: {
+                constituency: { $exists: true, $ne: null },
+              },
+            },
+          ]
+        : []),
+
+      // Stage 3: Lookup election candidates
+      {
+        $lookup: {
+          from: "electioncandidates",
+          let: {
+            electionId: "$election._id",
+            ...(constituencyIdNum
+              ? { constituencyId: "$constituency._id" }
+              : {}),
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$election", "$$electionId"] },
+                    ...(constituencyIdNum
+                      ? [{ $eq: ["$constituency", "$$constituencyId"] }]
+                      : []),
+                  ],
+                },
+              },
+            },
+            // Populate candidate details
+            {
+              $lookup: {
+                from: "candidates",
+                localField: "candidate",
+                foreignField: "_id",
+                as: "candidate",
+              },
+            },
+            { $unwind: "$candidate" },
+            // Populate party details
+            {
+              $lookup: {
+                from: "parties",
+                localField: "candidate.party",
+                foreignField: "_id",
+                as: "candidate.party",
+              },
+            },
+            { $unwind: "$candidate.party" },
+            // Populate constituency if not already in pipeline
+            ...(!constituencyIdNum
+              ? [
+                  {
+                    $lookup: {
+                      from: "constituencies",
+                      localField: "constituency",
+                      foreignField: "_id",
+                      as: "constituency",
+                    },
+                  },
+                  { $unwind: "$constituency" },
+                ]
+              : []),
+          ],
+          as: "candidates",
+        },
+      },
+
+      // Stage 4: Project the final result
+      {
+        $project: {
+          _id: 0,
+          election: {
+            id: "$election._id",
+            state: "$election.state",
+            year: "$election.year",
+            type: "$election.electionType",
+            totalSeats: "$election.totalSeats",
+          },
+          ...(constituencyIdNum
+            ? {
+                constituency: {
+                  id: "$constituency._id",
+                  name: "$constituency.name",
+                  constituencyId: "$constituency.constituencyId",
+                },
+              }
+            : {}),
+          candidates: {
+            $map: {
+              input: "$candidates",
+              as: "c",
+              in: {
+                candidate: {
+                  id: "$$c.candidate._id",
+                  name: "$$c.candidate.name",
+                  party: {
+                    id: "$$c.candidate.party._id",
+                    name: "$$c.candidate.party.name",
+                    // Add other party fields as needed
+                  },
+                },
+                ...(!constituencyIdNum
+                  ? {
+                      constituency: {
+                        id: "$$c.constituency._id",
+                        name: "$$c.constituency.name",
+                        constituencyId: "$$c.constituency.constituencyId",
+                      },
+                    }
+                  : {}),
+                votesReceived: "$$c.votesReceived",
+              },
+            },
+          },
+        },
+      },
+    ];
+
+    const result = await TempElection.aggregate(pipeline);
+
+    if (result.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No data found for the given parameters",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: result[0], // Since we're querying for one election, take the first result
+    });
+  } catch (error) {
+    console.error("Error fetching candidates:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
 
 module.exports = router;
