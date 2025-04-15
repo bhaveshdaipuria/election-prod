@@ -20,30 +20,30 @@
                 <input type="text" id="partyName" name="party" value="<%= party.party %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             </div>
         
-            <div class="mb-4">
-                <label for="totalSeats" class="block text-gray-700 text-sm font-bold mb-2">Total Seats:</label>
-                <input type="number" id="totalSeats" name="total_seat" value="<%= party.total_seat %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
+            <!-- <div class="mb-4"> -->
+            <!--     <label for="totalSeats" class="block text-gray-700 text-sm font-bold mb-2">Total Seats:</label> -->
+            <!--     <input type="number" id="totalSeats" name="total_seat" value="<%= party.total_seat %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"> -->
+            <!-- </div> -->
         
-            <div class="mb-4">
-                <label for="totalVotes" class="block text-gray-700 text-sm font-bold mb-2">Total Votes:</label>
-                <input type="number" id="totalVotes" name="total_votes" value="<%= party.total_votes %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
+            <!-- <div class="mb-4"> -->
+            <!--     <label for="totalVotes" class="block text-gray-700 text-sm font-bold mb-2">Total Votes:</label> -->
+            <!--     <input type="number" id="totalVotes" name="total_votes" value="<%= party.total_votes %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"> -->
+            <!-- </div> -->
         
-            <div class="mb-4">
-                <label for="electors" class="block text-gray-700 text-sm font-bold mb-2">Electors:</label>
-                <input type="number" id="electors" name="electors" value="<%= party.electors %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
+            <!-- <div class="mb-4"> -->
+            <!--     <label for="electors" class="block text-gray-700 text-sm font-bold mb-2">Electors:</label> -->
+            <!--     <input type="number" id="electors" name="electors" value="<%= party.electors %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"> -->
+            <!-- </div> -->
         
             <div class="mb-4">
                 <label for="colorCode" class="block text-gray-700 text-sm font-bold mb-2">Color Code (Hex):</label>
                 <input type="text" id="colorCode" name="color_code" value="<%= party.color_code %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             </div>
 
-            <div class="mb-4">
-                <label for="votes_percentage" class="block text-gray-700 text-sm font-bold mb-2">Vote Percentage</label>
-                <input type="text" id="votes_percentage" name="votes_percentage" value="<%= party.votes_percentage %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
+            <!-- <div class="mb-4"> -->
+            <!--     <label for="votes_percentage" class="block text-gray-700 text-sm font-bold mb-2">Vote Percentage</label> -->
+            <!--     <input type="text" id="votes_percentage" name="votes_percentage" value="<%= party.votes_percentage %>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"> -->
+            <!-- </div> -->
         
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Current Party Logo:</label>
@@ -75,11 +75,11 @@
             // Gather the form data
             const formData = new FormData();
             formData.append('party', document.getElementById('partyName').value);
-            formData.append('total_seat', document.getElementById('totalSeats').value);
-            formData.append('total_votes', document.getElementById('totalVotes').value);
-            formData.append('electors', document.getElementById('electors').value);
+            // formData.append('total_seat', document.getElementById('totalSeats').value);
+            // formData.append('total_votes', document.getElementById('totalVotes').value);
+             // formData.append('electors', document.getElementById('electors').value);
             formData.append('color_code', document.getElementById('colorCode').value);
-            formData.append('votes_percentage', document.getElementById('votes_percentage').value);
+            // formData.append('votes_percentage', document.getElementById('votes_percentage').value);
             
             // Append the new logo file if it exists
             const logoInput = document.getElementById('partyLogo');

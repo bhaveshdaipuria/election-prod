@@ -320,10 +320,10 @@ router.put("/:id", upload.single("party_logo"), async (req, res) => {
     const partyData = {
       party: req.body.party,
       color_code: req.body.color_code,
-      total_seat: req.body.total_seat,
-      total_votes: req.body.total_votes,
-      electors: req.body.electors,
-      votes_percentage: req.body.votes_percentage,
+      // total_seat: req.body.total_seat,
+      // total_votes: req.body.total_votes,
+      // electors: req.body.electors,
+      // votes_percentage: req.body.votes_percentage,
     };
 
     if (req.file) {

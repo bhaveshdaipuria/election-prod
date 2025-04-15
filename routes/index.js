@@ -1200,7 +1200,8 @@ router.get("/election/candidates", async (req, res) => {
                   name: "$$c.candidate.name",
                   party: {
                     id: "$$c.candidate.party._id",
-                    name: "$$c.candidate.party.name",
+                    name: "$$c.candidate.party.party",
+                    logo: "$$c.candidate.party.party_logo",
                     // Add other party fields as needed
                   },
                 },
