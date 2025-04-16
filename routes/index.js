@@ -165,8 +165,7 @@ async function getCandidateElectionDetails(
   ];
 
   // Execute the aggregation
-  const candidateElections =
-    await CandidateElectioModel.aggregate(pipeline);
+  const candidateElections = await CandidateElectioModel.aggregate(pipeline);
 
   return candidateElections;
 }
@@ -1215,6 +1214,7 @@ router.get("/election/candidates", async (req, res) => {
                     }
                   : {}),
                 votesReceived: "$$c.votesReceived",
+                status: "$$c.status",
               },
             },
           },
