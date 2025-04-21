@@ -1244,4 +1244,64 @@ router.get("/election/candidates", async (req, res) => {
   }
 });
 
+router.get("/election/years/:state", async (req, res) => {
+  try {
+    const { state } = req.params;
+
+    // Validate required parameter
+    if (!state) {
+      return res.status(400).json({
+        success: false,
+        message: "State parameter is required",
+      });
+    }
+
+    const result = await TempElection.aggregate([
+      {
+        $match: {
+          state: state
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          availableYears: { $addToSet: "$year" }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          availableYears: {
+            $sortArray: {
+              input: "$availableYears",
+              sortBy: -1  // -1 for descending (most recent first), 1 for ascending
+            }
+          }
+        }
+      }
+    ]);
+
+    if (result.length === 0 || result[0].availableYears.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No election data found for the given state",
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        state: state,
+        availableYears: result[0].availableYears
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching available years:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
 module.exports = router;
