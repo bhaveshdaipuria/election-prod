@@ -1304,4 +1304,113 @@ router.get("/election/years/:state", async (req, res) => {
   }
 });
 
+router.get('/elections/state-elections', async (req, res) => {
+    try {
+        const { state } = req.query;
+        
+        if (!state) {
+            return res.status(400).json({ message: 'State parameter is required' });
+        }
+
+        const results = await TempElection.aggregate([
+            // Match elections for the requested state
+            { $match: { state } },
+            
+            // Sort by year ascending
+            { $sort: { year: 1 } },
+            
+            // Lookup party results for each election
+            {
+                $lookup: {
+                    from: 'electionpartyresults',
+                    localField: '_id',
+                    foreignField: 'election',
+                    as: 'partyResults'
+                }
+            },
+            
+            // Unwind the party results array
+            { $unwind: { path: '$partyResults', preserveNullAndEmptyArrays: true } },
+            
+            // Lookup party details for each result
+            {
+                $lookup: {
+                    from: 'parties',
+                    localField: 'partyResults.party',
+                    foreignField: '_id',
+                    as: 'partyResults.partyDetails'
+                }
+            },
+            
+            // Unwind the party details (since lookup returns an array)
+            { $unwind: { path: '$partyResults.partyDetails', preserveNullAndEmptyArrays: true } },
+            
+            // Group back by election and collect party results
+            {
+                $group: {
+                    _id: '$_id',
+                    year: { $first: '$year' },
+                    state: { $first: '$state' },
+                    electionType: { $first: '$electionType' },
+                    totalSeats: { $first: '$totalSeats' },
+                    halfWayMark: { $first: '$halfWayMark' },
+                    status: { $first: '$status' },
+                    parties: {
+                        $push: {
+                            $cond: [
+                                { $ne: ['$partyResults', {}] },
+                                {
+                                    party: {
+                                        party: '$partyResults.partyDetails.party',
+                                        color_code: '$partyResults.partyDetails.color_code',
+                                        party_logo: '$partyResults.partyDetails.party_logo'
+                                    },
+                                    seatsWon: '$partyResults.seatsWon'
+                                },
+                                null
+                            ]
+                        }
+                    }
+                }
+            },
+            
+            // Filter out null values from parties array
+            {
+                $addFields: {
+                    parties: {
+                        $filter: {
+                            input: '$parties',
+                            as: 'party',
+                            cond: { $ne: ['$$party', null] }
+                        }
+                    }
+                }
+            },
+            
+            // Project to clean up the output
+            {
+                $project: {
+                    _id: 0,
+                    year: 1,
+                    state: 1,
+                    electionType: 1,
+                    totalSeats: 1,
+                    halfWayMark: 1,
+                    status: 1,
+                    parties: 1
+                }
+            }
+        ]);
+
+        if (!results || results.length === 0) {
+            return res.status(404).json({ message: 'No elections found for the specified state' });
+        }
+
+        res.json(results);
+    } catch (error) {
+        console.error('Error fetching state elections:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 module.exports = router;
