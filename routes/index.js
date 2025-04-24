@@ -1259,14 +1259,14 @@ router.get("/election/years/:state", async (req, res) => {
     const result = await TempElection.aggregate([
       {
         $match: {
-          state: state
-        }
+          state: state,
+        },
       },
       {
         $group: {
           _id: null,
-          availableYears: { $addToSet: "$year" }
-        }
+          availableYears: { $addToSet: "$year" },
+        },
       },
       {
         $project: {
@@ -1274,11 +1274,11 @@ router.get("/election/years/:state", async (req, res) => {
           availableYears: {
             $sortArray: {
               input: "$availableYears",
-              sortBy: -1  // -1 for descending (most recent first), 1 for ascending
-            }
-          }
-        }
-      }
+              sortBy: -1, // -1 for descending (most recent first), 1 for ascending
+            },
+          },
+        },
+      },
     ]);
 
     if (result.length === 0 || result[0].availableYears.length === 0) {
@@ -1292,8 +1292,8 @@ router.get("/election/years/:state", async (req, res) => {
       success: true,
       data: {
         state: state,
-        availableYears: result[0].availableYears
-      }
+        availableYears: result[0].availableYears,
+      },
     });
   } catch (error) {
     console.error("Error fetching available years:", error);
@@ -1304,113 +1304,240 @@ router.get("/election/years/:state", async (req, res) => {
   }
 });
 
-router.get('/elections/state-elections', async (req, res) => {
-    try {
-        const { state } = req.query;
-        
-        if (!state) {
-            return res.status(400).json({ message: 'State parameter is required' });
-        }
+router.get("/elections/state-elections", async (req, res) => {
+  try {
+    const { state } = req.query;
 
-        const results = await TempElection.aggregate([
-            // Match elections for the requested state
-            { $match: { state } },
-            
-            // Sort by year ascending
-            { $sort: { year: 1 } },
-            
-            // Lookup party results for each election
-            {
-                $lookup: {
-                    from: 'electionpartyresults',
-                    localField: '_id',
-                    foreignField: 'election',
-                    as: 'partyResults'
-                }
-            },
-            
-            // Unwind the party results array
-            { $unwind: { path: '$partyResults', preserveNullAndEmptyArrays: true } },
-            
-            // Lookup party details for each result
-            {
-                $lookup: {
-                    from: 'parties',
-                    localField: 'partyResults.party',
-                    foreignField: '_id',
-                    as: 'partyResults.partyDetails'
-                }
-            },
-            
-            // Unwind the party details (since lookup returns an array)
-            { $unwind: { path: '$partyResults.partyDetails', preserveNullAndEmptyArrays: true } },
-            
-            // Group back by election and collect party results
-            {
-                $group: {
-                    _id: '$_id',
-                    year: { $first: '$year' },
-                    state: { $first: '$state' },
-                    electionType: { $first: '$electionType' },
-                    totalSeats: { $first: '$totalSeats' },
-                    halfWayMark: { $first: '$halfWayMark' },
-                    status: { $first: '$status' },
-                    parties: {
-                        $push: {
-                            $cond: [
-                                { $ne: ['$partyResults', {}] },
-                                {
-                                    party: {
-                                        party: '$partyResults.partyDetails.party',
-                                        color_code: '$partyResults.partyDetails.color_code',
-                                        party_logo: '$partyResults.partyDetails.party_logo'
-                                    },
-                                    seatsWon: '$partyResults.seatsWon'
-                                },
-                                null
-                            ]
-                        }
-                    }
-                }
-            },
-            
-            // Filter out null values from parties array
-            {
-                $addFields: {
-                    parties: {
-                        $filter: {
-                            input: '$parties',
-                            as: 'party',
-                            cond: { $ne: ['$$party', null] }
-                        }
-                    }
-                }
-            },
-            
-            // Project to clean up the output
-            {
-                $project: {
-                    _id: 0,
-                    year: 1,
-                    state: 1,
-                    electionType: 1,
-                    totalSeats: 1,
-                    halfWayMark: 1,
-                    status: 1,
-                    parties: 1
-                }
-            }
-        ]);
-
-        if (!results || results.length === 0) {
-            return res.status(404).json({ message: 'No elections found for the specified state' });
-        }
-
-        res.json(results);
-    } catch (error) {
-        console.error('Error fetching state elections:', error);
-        res.status(500).json({ message: 'Internal server error' });
+    if (!state) {
+      return res.status(400).json({ message: "State parameter is required" });
     }
+
+    const results = await TempElection.aggregate([
+      // Match elections for the requested state
+      { $match: { state } },
+
+      // Sort by year ascending
+      { $sort: { year: 1 } },
+
+      // Lookup party results for each election
+      {
+        $lookup: {
+          from: "electionpartyresults",
+          localField: "_id",
+          foreignField: "election",
+          as: "partyResults",
+        },
+      },
+
+      // Unwind the party results array
+      { $unwind: { path: "$partyResults", preserveNullAndEmptyArrays: true } },
+
+      // Lookup party details for each result
+      {
+        $lookup: {
+          from: "parties",
+          localField: "partyResults.party",
+          foreignField: "_id",
+          as: "partyResults.partyDetails",
+        },
+      },
+
+      // Unwind the party details (since lookup returns an array)
+      {
+        $unwind: {
+          path: "$partyResults.partyDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      // Group back by election and collect party results
+      {
+        $group: {
+          _id: "$_id",
+          year: { $first: "$year" },
+          state: { $first: "$state" },
+          electionType: { $first: "$electionType" },
+          totalSeats: { $first: "$totalSeats" },
+          halfWayMark: { $first: "$halfWayMark" },
+          status: { $first: "$status" },
+          parties: {
+            $push: {
+              $cond: [
+                { $ne: ["$partyResults", {}] },
+                {
+                  party: {
+                    party: "$partyResults.partyDetails.party",
+                    color_code: "$partyResults.partyDetails.color_code",
+                    party_logo: "$partyResults.partyDetails.party_logo",
+                  },
+                  seatsWon: "$partyResults.seatsWon",
+                },
+                null,
+              ],
+            },
+          },
+        },
+      },
+
+      // Filter out null values from parties array
+      {
+        $addFields: {
+          parties: {
+            $filter: {
+              input: "$parties",
+              as: "party",
+              cond: { $ne: ["$$party", null] },
+            },
+          },
+        },
+      },
+
+      // Project to clean up the output
+      {
+        $project: {
+          _id: 0,
+          year: 1,
+          state: 1,
+          electionType: 1,
+          totalSeats: 1,
+          halfWayMark: 1,
+          status: 1,
+          parties: 1,
+        },
+      },
+    ]);
+
+    if (!results || results.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No elections found for the specified state" });
+    }
+
+    res.json(results);
+  } catch (error) {
+    console.error("Error fetching state elections:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/elections/map/top-candidates", async (req, res) => {
+  try {
+    const { state, year, type } = req.query;
+
+    if (!state || !year || !type) {
+      return res.status(400).json({
+        success: false,
+        message: "State, year, and type are required query parameters",
+      });
+    }
+
+    // First, find the election to get its ID
+    const election = await TempElection.findOne({
+      state: state,
+      year: parseInt(year),
+      electionType: type,
+    }).lean();
+
+    if (!election) {
+      return res.status(404).json({
+        success: false,
+        message: "Election not found",
+      });
+    }
+
+    // Get all participating parties first
+    const allParties = await PartyElectionModel.aggregate([
+      { $match: { election: election._id } },
+      {
+        $lookup: {
+          from: "parties",
+          localField: "party",
+          foreignField: "_id",
+          as: "partyData",
+        },
+      },
+      { $unwind: "$partyData" },
+      {
+        $project: {
+          _id: 0,
+          partyName: "$partyData.party",
+          seatsWon: "$seatsWon",
+          partyColor: "$partyData.color_code",
+        },
+      },
+    ]);
+
+    // Get constituency data with top candidates
+    const constituencies = await CandidateElectioModel.aggregate([
+      { $match: { election: election._id } },
+      { $sort: { constituency: 1, votesReceived: -1 } },
+      {
+        $lookup: {
+          from: "candidates",
+          localField: "candidate",
+          foreignField: "_id",
+          as: "candidate",
+        },
+      },
+      { $unwind: "$candidate" },
+      {
+        $lookup: {
+          from: "parties",
+          localField: "candidate.party",
+          foreignField: "_id",
+          as: "party",
+        },
+      },
+      { $unwind: "$party" },
+      {
+        $lookup: {
+          from: "constituencies",
+          localField: "constituency",
+          foreignField: "_id",
+          as: "constituency",
+        },
+      },
+      { $unwind: "$constituency" },
+      {
+        $group: {
+          _id: "$constituency._id",
+          constituencyName: { $first: "$constituency.name" },
+          candidates: {
+            $push: {
+              name: "$candidate.name",
+              partyName: "$party.party",
+              votesReceived: "$votesReceived",
+              status: "$status",
+              partyColor: "$party.color_code",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          constituencyName: 1,
+          candidates: { $slice: ["$candidates", 2] },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        electionId: election._id,
+        electionName: `${state} ${type} election ${year}`,
+        constituencies: constituencies,
+        parties: allParties,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching election data:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 });
 
 module.exports = router;
