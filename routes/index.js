@@ -22,7 +22,7 @@ const redis = RedisManager.getInstance();
 async function getCandidateElectionDetails(
   userType,
   electionId,
-  allowedConstituencies,
+  allowedConstituencies
 ) {
   const pipeline = [
     { $match: { election: new mongoose.Types.ObjectId(electionId) } },
@@ -44,7 +44,7 @@ async function getCandidateElectionDetails(
             $match: {
               "candidateInfo.constituency": {
                 $in: allowedConstituencies.map((id) =>
-                  typeof id === "string" ? new mongoose.Types.ObjectId(id) : id,
+                  typeof id === "string" ? new mongoose.Types.ObjectId(id) : id
                 ),
               },
             },
@@ -195,13 +195,13 @@ router.get(
     } catch (error) {
       next(error);
     }
-  },
+  }
 );
 
 router.get("/accounts-list", isLoggedIn, isAdmin, async (req, res) => {
   const users = await UserModel.find({}).populate(
     "allowedConstituencies",
-    "name",
+    "name"
   );
   const constituencies = await Constituency.find({}, "_id name");
 
@@ -305,7 +305,7 @@ router.get(
       alliancesData,
       userRole: req.userRole,
     });
-  },
+  }
 );
 
 router.get("/login", function (req, res, next) {
@@ -412,15 +412,15 @@ router.get(
         candidateElectionDetails = await getCandidateElectionDetails(
           req.userRole,
           electionId,
-          req.allowedConst,
+          req.allowedConst
         );
 
         candidateElectionDetails = candidateElectionDetails.filter(
-          (doc) => doc.candidate !== null,
+          (doc) => doc.candidate !== null
         );
 
         const allowedParties = candidateElectionDetails.map(
-          (candidate) => candidate.candidate.party._id,
+          (candidate) => candidate.candidate.party._id
         );
 
         partyElectionDetails = await PartyElectionModel.find({
@@ -435,21 +435,21 @@ router.get(
         candidateElectionDetails = await getCandidateElectionDetails(
           req.userRole,
           electionId,
-          req.allowedConst,
+          req.allowedConst
         );
       }
 
       const partyIdsInElection = partyElectionDetails.map((partyElection) =>
-        partyElection.party._id.toString(),
+        partyElection.party._id.toString()
       );
 
       const candidatesInElection = candidateElectionDetails.map(
-        (candidateElection) => candidateElection.candidate._id.toString(),
+        (candidateElection) => candidateElection.candidate._id.toString()
       );
 
       const allPartiesList = await Party.find(
         { _id: { $nin: partyIdsInElection } },
-        "party",
+        "party"
       );
 
       const candidatesQuery = {
@@ -474,7 +474,7 @@ router.get(
     } catch (error) {
       next(error);
     }
-  },
+  }
 );
 
 router.get("/temp-election-list", isLoggedIn, isUser, async (req, res) => {
@@ -721,7 +721,7 @@ router.get(
     } catch (error) {
       next(error);
     }
-  },
+  }
 );
 
 // create constituency route
@@ -750,7 +750,7 @@ router.get(
       console.log(error);
       res.status(500).send("Error fetching constituencies");
     }
-  },
+  }
 );
 
 // create constituency page create-constituency
@@ -766,7 +766,7 @@ router.get(
       error: errorMessages,
       userRole: req.userRole,
     });
-  },
+  }
 );
 
 router.get(
@@ -784,7 +784,7 @@ router.get(
             path: "party",
             model: "Party",
           },
-        },
+        }
       );
       if (!constituency) {
         return res.status(404).send("Constituency not found");
@@ -800,7 +800,7 @@ router.get(
     } catch (error) {
       console.log(error);
     }
-  },
+  }
 );
 
 router.get("/candidates", isLoggedIn, isAdmin, async function (req, res, next) {
@@ -888,7 +888,7 @@ router.get(
       console.log(error);
       res.status(500).send("Error fetching data for creating candidate");
     }
-  },
+  }
 );
 
 router.get(
@@ -898,8 +898,9 @@ router.get(
   async function (req, res, next) {
     try {
       const candidateId = req.params.id;
-      const candidate =
-        await Candidate.findById(candidateId).populate("party constituency");
+      const candidate = await Candidate.findById(candidateId).populate(
+        "party constituency"
+      );
       if (!candidate) {
         return res.status(404).send("Candidate not found");
       }
@@ -915,7 +916,7 @@ router.get(
       console.log(error);
       res.status(500).send("Error fetching data for editing candidate");
     }
-  },
+  }
 );
 
 // create for assembly-election
@@ -936,7 +937,7 @@ router.get(
         .status(500)
         .send("Error fetching data for creating assembly election");
     }
-  },
+  }
 );
 
 // create for edit assembly-election
@@ -963,7 +964,7 @@ router.get(
       console.log(error);
       res.status(500).send("Error fetching data for editing assembly election");
     }
-  },
+  }
 );
 
 // get route for show the assembly-election
@@ -973,8 +974,9 @@ router.get(
   isAdmin,
   async function (req, res, next) {
     try {
-      const assemblyElections =
-        await AssemblyElection.find().populate("constituencies"); // Fetch all elections
+      const assemblyElections = await AssemblyElection.find().populate(
+        "constituencies"
+      ); // Fetch all elections
       res.render("assembly-election.ejs", {
         assemblyElections,
         userRole: req.userRole,
@@ -983,7 +985,7 @@ router.get(
       console.log(error);
       res.status(500).send("Error fetching assembly election");
     }
-  },
+  }
 );
 
 router.get(
@@ -1032,7 +1034,7 @@ router.get(
       console.log(error);
       res.status(500).send("Error fetching candidates.");
     }
-  },
+  }
 );
 
 router.get("/election/candidates", async (req, res) => {
@@ -1465,6 +1467,7 @@ router.get("/elections/map/top-candidates", async (req, res) => {
           partyColor: "$partyData.color_code",
         },
       },
+      { $sort: { seatsWon: -1 } },
     ]);
 
     // Get constituency data with top candidates
@@ -1502,6 +1505,8 @@ router.get("/elections/map/top-candidates", async (req, res) => {
         $group: {
           _id: "$constituency._id",
           constituencyName: { $first: "$constituency.name" },
+          constituencyId: { $first: "$constituency.constituencyId" },
+
           candidates: {
             $push: {
               name: "$candidate.name",
@@ -1517,6 +1522,7 @@ router.get("/elections/map/top-candidates", async (req, res) => {
         $project: {
           _id: 0,
           constituencyName: 1,
+          constituencyId: 1,
           candidates: { $slice: ["$candidates", 2] },
         },
       },
