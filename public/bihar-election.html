@@ -5397,11 +5397,11 @@
           .then((data) => {
             document.querySelector(
               ".main_title"
-            ).innerText = `बिहार विधानसभा चुनाव परिणाम ${data.year} (243 सीट)`;
+	    ).innerText = `${data.data.electionName}`;
 
             renderPartiesColorAndName(data.data.parties);
             applyColorsAndPopovers(data);
-            updateBarResults(data.data);
+            // updateBarResults(data.data);
           })
           .catch((error) => {
             console.error("Error fetching colors:", error);
@@ -5423,7 +5423,6 @@
       }
 
       function renderPartiesColorAndName(data) {
-        console.log(data);
         const partyContainer = document.querySelector(".party_name_color");
         partyContainer.innerHTML = "";
         data.forEach((party) => {
@@ -5455,20 +5454,16 @@
         data.data.constituencies.forEach((constituency) => {
           const constituencyId = `cns-${constituency.constituencyId}`;
 
-          console.log("constituencyId -> ", constituencyId);
 
           const path = document.querySelector(
             `path[data-id="${constituencyId}"]`
           );
 
           if (path) {
-            console.log("inside the path");
 
             const candidate = constituency.candidates[0];
             const trailingCandidate = constituency.candidates[1];
 
-            console.log(candidate, "    ", trailingCandidate);
-            console.log(constituency);
 
             path.setAttribute(
               "data-constituency",
@@ -5476,7 +5471,6 @@
             );
 
             if (candidate) {
-              // console.log("inside candidate", candidate);
               path.setAttribute("data-candidate", candidate.name || "Unknown");
               path.setAttribute(
                 "data-totalVotes",
@@ -5502,7 +5496,7 @@
                 );
                 path.setAttribute(
                   "data-trail-partyName",
-                  trailingCandidate?.party?.party || ""
+                  trailingCandidate?.partyName || ""
                 );
                 // console.log(path);
               } else {
@@ -5519,7 +5513,6 @@
         });
       }
 
-      function getText(won) {}
 
       function showPopover(event, path) {
         const candidate = path.getAttribute("data-candidate") || "Unknown";
@@ -5687,6 +5680,6 @@
 
     <!-- <script src="/javascripts/js-jquery.min.js"></script> -->
     <!-- <script src="assets/js/bootstrap.min.js"></script> -->
-    <!-- <script src="/javascripts/js-widget2024.js"></script> -->
+    <script src="/javascripts/js-widget2024.js"></script>
   </body>
 </html>

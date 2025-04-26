@@ -1,16 +1,20 @@
 let TOTAL_SEATS = 81;
-const MAJORITY_MARK = 41;
+let MAJORITY_MARK = 41;
 
 async function getData() {
   try {
-    const response = await fetch("/api/elections/party-summary");
-    const result = await response.json();
-    TOTAL_SEATS = result.totalSeats;
-    result.parties = result.parties.filter((party) => {
-      return (
-        party.name === "AAP" || party.name === "BJP" || party.name === "BJP+"
-      );
-    });
+    const params = new URLSearchParams(document.location.search);
+    let stateName = params.get("state") || "Bihar";
+    stateName = stateName[0].toUpperCase() + stateName.slice(1);
+    const year = params.get("year") || "2020";
+    const type = params.get("type") || "general";
+    const response = await fetch(
+      `/elections/map/top-candidates?state=${stateName}&year=${year}&type=${type}`,
+    );
+    let result = await response.json();
+    TOTAL_SEATS = result.data.totalSeats;
+    MAJORITY_MARK = result.data.halfWayMark;
+    console.log("This is just some result", result);
 
     return result;
   } catch (error) {
@@ -29,7 +33,7 @@ async function getData() {
 }
 
 function getPartyTotal(party) {
-  return party.won + party.leading;
+  return party.seatsWon;
 }
 
 function getContenders(parties) {
@@ -45,7 +49,7 @@ function getContenders(parties) {
   const otherContenders = partiesSeats.slice(2);
   const totalAllocatedSeats = parties.reduce(
     (sum, party) => sum + getPartyTotal(party),
-    0
+    0,
   );
   return { contender1, contender2, otherContenders, totalAllocatedSeats };
 }
@@ -105,7 +109,7 @@ async function updateResults() {
 
   console.log("data -> ", data);
 
-  let { contender1, contender2 } = getContenders(data.parties);
+  let { contender1, contender2 } = getContenders(data.data.parties);
   if (contender2.name === "AAP") {
     let temp = contender2;
     contender2 = contender1;
@@ -113,8 +117,8 @@ async function updateResults() {
   }
 
   // Update party names and scores
-  document.getElementById("contender1-name").textContent = contender1.name;
-  document.getElementById("contender2-name").textContent = contender2.name;
+  document.getElementById("contender1-name").textContent = contender1.partyName;
+  document.getElementById("contender2-name").textContent = contender2.partyName;
 
   document.getElementById("contender1-score").textContent =
     contender1.totalSeats;
@@ -130,7 +134,7 @@ async function updateResults() {
   const barsContainer = document.getElementById("bars-container");
   barsContainer.innerHTML = ""; // Clear existing bars
 
-  const barWidths = calculateBarWidths(data.parties);
+  const barWidths = calculateBarWidths(data.data.parties);
 
   barWidths.forEach(({ party, width, position }) => {
     console.log(barWidths);
