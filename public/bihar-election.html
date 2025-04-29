@@ -220,8 +220,8 @@
 
   <style>
     body {
-      overflow-x: hidden;
-      overflow-y: hidden;
+      /* overflow-x: hidden; */
+      /* overflow-y: hidden; */
       background-color: #ffffff;
       color: #000000;
       font-family: "Montserrat", sans-serif;
@@ -5337,7 +5337,16 @@
           ><!--/biharmap_const.cms?version=5potime:62-->
         </div>
 
-        <div class="party_name_color flex gap-[5px] mt-5 text-md"></div>
+        <div
+          style="
+            position: relative;
+            top: -300px;
+            width: 700px;
+            height: 100px;
+            overflow-y: scroll;
+          "
+          class="party_name_color flex gap-4 text-md"
+        ></div>
         <!-- <div class="loader"></div> -->
       </div>
     </div>
@@ -5397,7 +5406,7 @@
           .then((data) => {
             document.querySelector(
               ".main_title"
-	    ).innerText = `${data.data.electionName}`;
+            ).innerText = `${data.data.electionName}`;
 
             renderPartiesColorAndName(data.data.parties);
             applyColorsAndPopovers(data);
@@ -5454,16 +5463,13 @@
         data.data.constituencies.forEach((constituency) => {
           const constituencyId = `cns-${constituency.constituencyId}`;
 
-
           const path = document.querySelector(
             `path[data-id="${constituencyId}"]`
           );
 
           if (path) {
-
             const candidate = constituency.candidates[0];
             const trailingCandidate = constituency.candidates[1];
-
 
             path.setAttribute(
               "data-constituency",
@@ -5512,7 +5518,6 @@
           }
         });
       }
-
 
       function showPopover(event, path) {
         const candidate = path.getAttribute("data-candidate") || "Unknown";

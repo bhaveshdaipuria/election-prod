@@ -9,7 +9,7 @@ async function getData() {
     const year = params.get("year") || "2020";
     const type = params.get("type") || "general";
     const response = await fetch(
-      `/elections/map/top-candidates?state=${stateName}&year=${year}&type=${type}`,
+      `/elections/map/top-candidates?state=${stateName}&year=${year}&type=${type}`
     );
     let result = await response.json();
     TOTAL_SEATS = result.data.totalSeats;
@@ -49,7 +49,7 @@ function getContenders(parties) {
   const otherContenders = partiesSeats.slice(2);
   const totalAllocatedSeats = parties.reduce(
     (sum, party) => sum + getPartyTotal(party),
-    0,
+    0
   );
   return { contender1, contender2, otherContenders, totalAllocatedSeats };
 }
@@ -80,6 +80,7 @@ function calculateBarWidths(parties) {
     });
     currentPosition += blankWidth;
   }
+
   // Add other parties in the middle
   otherContenders.forEach((party) => {
     const partyWidth = (party.totalSeats / totalSeats) * 100;
