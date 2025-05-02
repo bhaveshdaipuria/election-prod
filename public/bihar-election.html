@@ -382,6 +382,17 @@
       right: 16px;
     }
 
+    .party-result.others {
+      top: -17px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    @media (max-width: 768px) {
+      .party-result.others {
+        top: -1px;
+      }
+    }
+
     .party-name-map {
       font-size: 22px;
       font-weight: bold;
@@ -390,6 +401,21 @@
     .party-score {
       font-size: clamp(24px, 5vw, 32px);
       font-weight: bold;
+    }
+
+    .responsive-style {
+      position: relative;
+      top: -300px;
+      width: 700px;
+      height: 100px;
+      overflow-y: scroll;
+    }
+
+    @media (max-width: 768px) {
+      .responsive-style {
+        top: -132px;
+        width: 438px;
+      }
     }
 
     @media (max-width: 768px) {
@@ -446,6 +472,12 @@
               <div id="contender1-name" class="party-name-map"></div>
               <div id="contender1-score" class="party-score"></div>
             </div>
+
+            <div class="party-result others">
+              <div id="others-name" class="party-name-map"></div>
+              <div id="others-score" class="party-score"></div>
+            </div>
+
             <div class="party-result right">
               <div id="contender2-name" class="party-name-map"></div>
               <div id="contender2-score" class="party-score"></div>
@@ -5337,16 +5369,7 @@
           ><!--/biharmap_const.cms?version=5potime:62-->
         </div>
 
-        <div
-          style="
-            position: relative;
-            top: -300px;
-            width: 700px;
-            height: 100px;
-            overflow-y: scroll;
-          "
-          class="party_name_color flex gap-4 text-md"
-        ></div>
+        <div class="responsive-style party_name_color flex gap-4 text-md"></div>
         <!-- <div class="loader"></div> -->
       </div>
     </div>

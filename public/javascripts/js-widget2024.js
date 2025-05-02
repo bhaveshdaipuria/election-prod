@@ -1,5 +1,5 @@
-let TOTAL_SEATS = 81;
-let MAJORITY_MARK = 41;
+let TOTAL_SEATS = 243;
+let MAJORITY_MARK = 121;
 
 async function getData() {
   try {
@@ -14,7 +14,7 @@ async function getData() {
     let result = await response.json();
     TOTAL_SEATS = result.data.totalSeats;
     MAJORITY_MARK = result.data.halfWayMark;
-    console.log("This is just some result", result);
+    //console.log("This is just some result", result);
 
     return result;
   } catch (error) {
@@ -64,15 +64,21 @@ function calculateBarWidths(parties) {
   let currentPosition = 0;
   const blankSeats = totalSeats - totalAllocatedSeats;
 
+  //console.log("left -->>>", currentPosition);
+
   // Add first contender to the left
   widths.push({
     party: contender1,
     width: (contender1.totalSeats / totalSeats) * 100,
     position: currentPosition,
   });
+
+  //console.log("after left -->>>", currentPosition);
+
   // Add blank bar (if any) between "Other Parties" and BJP+
   if (blankSeats > 0) {
-    const blankWidth = (blankSeats / totalSeats) * 100;
+    // const blankWidth = (blankSeats / totalSeats) * 100;
+    const blankWidth = 50;
     widths.push({
       party: { name: "Blank", partyColor: "#E0E0E0" }, // Gray for blank
       width: blankWidth,
@@ -80,6 +86,8 @@ function calculateBarWidths(parties) {
     });
     currentPosition += blankWidth;
   }
+
+  //console.log("after blank bar -->>>", currentPosition);
 
   // Add other parties in the middle
   otherContenders.forEach((party) => {
@@ -92,6 +100,19 @@ function calculateBarWidths(parties) {
     currentPosition += partyWidth;
   });
 
+  if (blankSeats > 0) {
+    // const blankWidth = (blankSeats / totalSeats) * 100;
+    const blankWidth = 50;
+    widths.push({
+      party: { name: "Blank", partyColor: "#E0E0E0" }, // Gray for blank
+      width: blankWidth,
+      position: currentPosition,
+    });
+    currentPosition += blankWidth;
+  }
+
+  //console.log("after adding middle -->>>", currentPosition);
+
   // Add second contender at the end
   widths.push({
     party: contender2,
@@ -99,7 +120,9 @@ function calculateBarWidths(parties) {
     position: currentPosition,
   });
 
-  console.log("widths -> ", widths);
+  //console.log("after adding right -->>>", currentPosition);
+
+  //console.log("widths -> ", widths);
 
   return widths;
 }
@@ -108,9 +131,11 @@ async function updateResults() {
   const data = await getData();
   if (!data) return;
 
-  console.log("data -> ", data);
+  //console.log("data -> ", data);
 
-  let { contender1, contender2 } = getContenders(data.data.parties);
+  let { contender1, contender2, otherContenders } = getContenders(
+    data.data.parties
+  );
   if (contender2.name === "AAP") {
     let temp = contender2;
     contender2 = contender1;
@@ -120,6 +145,7 @@ async function updateResults() {
   // Update party names and scores
   document.getElementById("contender1-name").textContent = contender1.partyName;
   document.getElementById("contender2-name").textContent = contender2.partyName;
+  document.getElementById("others-name").textContent = "Others";
 
   document.getElementById("contender1-score").textContent =
     contender1.totalSeats;
@@ -131,6 +157,12 @@ async function updateResults() {
   document.getElementById("contender2-score").style.color =
     contender2.partyColor;
 
+  document.getElementById("others-score").textContent = otherContenders.reduce(
+    (sum, party) => sum + getPartyTotal(party),
+    0
+  );
+  document.getElementById("others-score").style.color = "#37474F";
+
   // Calculate and update bars
   const barsContainer = document.getElementById("bars-container");
   barsContainer.innerHTML = ""; // Clear existing bars
@@ -138,7 +170,7 @@ async function updateResults() {
   const barWidths = calculateBarWidths(data.data.parties);
 
   barWidths.forEach(({ party, width, position }) => {
-    console.log(barWidths);
+    //console.log(barWidths);
     const bar = document.createElement("div");
     bar.className = "bar";
     bar.style.backgroundColor = party.partyColor;

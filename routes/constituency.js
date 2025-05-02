@@ -6,6 +6,8 @@ const Candidate = require("../models/candidates");
 const RedisManager = require("../RedisManager"); // Make sure RedisManager is imported
 const { cachedKeys } = require("../utils");
 const { isAdmin } = require("../middleware/admin");
+const TempElection = require("../models/temp-election.model");
+const ElectionConstituency = require("../models/constituency-election-model");
 
 const router = express.Router();
 const redis = RedisManager.getInstance();
@@ -63,21 +65,60 @@ router.post("/", isAdmin, async (req, res, next) => {
 });
 
 // Get all constituencies and cache the result
+// router.get("/", async (req, res, next) => {
+//   try {
+//     // Check if the constituency list is cached
+//     const cachedData = await redis.get(cachedKeys.CONSTITUENCY);
+//     if (cachedData) {
+//       return res.json(cachedData);
+//     }
+
+//     // Fetch from DB if no cache
+//     const constituencies = await Constituency.find()
+//       .populate("candidates")
+//       .sort({ name: 1 });
+
+//     // Cache the result
+//     await redis.setWithTTL(cachedKeys.CONSTITUENCY, constituencies, 3600);
+//     res.json(constituencies);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+// Get all constituencies relvent to the election
 router.get("/", async (req, res, next) => {
   try {
-    // Check if the constituency list is cached
-    const cachedData = await redis.get(cachedKeys.CONSTITUENCY);
-    if (cachedData) {
-      return res.json(cachedData);
+    const { state, year, type } = req.query;
+
+    if (!state || !year || !type) {
+      return res.status(400).json({
+        success: false,
+        message: "State, year, and type are required query parameters",
+      });
     }
 
-    // Fetch from DB if no cache
-    const constituencies = await Constituency.find()
-      .populate("candidates")
-      .sort({ name: 1 });
+    // First, find the election to get its ID
+    const election = await TempElection.findOne({
+      state: state,
+      year: parseInt(year),
+      electionType: type,
+    }).lean();
 
-    // Cache the result
-    await redis.setWithTTL(cachedKeys.CONSTITUENCY, constituencies, 3600);
+    if (!election) {
+      return res.status(404).json({
+        success: false,
+        message: "Election not found",
+      });
+    }
+
+    const constituencies = await ElectionConstituency.find({
+      election: election._id,
+    })
+      .populate({ path: "constituency", select: "-candidates" })
+      .lean()
+      .then((results) => results.map((result) => result.constituency));
+
     res.json(constituencies);
   } catch (error) {
     next(error);
