@@ -5427,6 +5427,7 @@
         )
           .then((response) => response.json())
           .then((data) => {
+		  console.log(data)
             document.querySelector(
               ".main_title"
             ).innerText = `${data.data.electionName}`;
@@ -5505,6 +5506,7 @@
                 "data-totalVotes",
                 candidate.votesReceived || "0"
               );
+              path.style.fill = candidate.partyColor
               path.setAttribute("data-partyName", candidate.partyName || "N/A");
               path.setAttribute(
                 "data-partyLogo",

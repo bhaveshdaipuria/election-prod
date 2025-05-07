@@ -16,6 +16,6 @@ const ConstituencyElectionSchema = new mongoose.Schema({
 
 const model = mongoose.model(
   "ElectionConstituency",
-  ConstituencyElectionSchema
+  ConstituencyElectionSchema,
 );
 module.exports = model;
