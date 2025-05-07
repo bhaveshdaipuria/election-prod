@@ -809,6 +809,13 @@ thead{
 
 		<script>
 
+			// get year, state and type of election to clear cache from redis
+			const electionDetails = <%-JSON.stringify(election)%>;
+			const electionState = electionDetails.state
+			const electionYear = electionDetails.year
+			const electionType = electionDetails.electionType
+			
+
 			function filterManagementConstituencies() {
 				const filter = document.getElementById('constituencyManagementFilter').value.toLowerCase();
 				const rows = document.querySelectorAll('#constituencyManagementBody tr');
@@ -942,7 +949,7 @@ thead{
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					body: JSON.stringify({constituencies: constituencyChanges})
+					body: JSON.stringify({constituencies: constituencyChanges, redisKeys:{state: electionState, year: electionYear, type: electionType}})
 				})
 					.then(res => res.json())
 					.then(data => {
@@ -1186,7 +1193,8 @@ thead{
 				// Create the data to send
 				const requestData = {
 					election: electionId,
-					parties: selectedParties.map(party => party.id)
+					parties: selectedParties.map(party => party.id),
+					redisKeys:{state: electionState, year: electionYear, type: electionType}
 				};
 
 				// Send the PATCH request to add parties
@@ -1235,6 +1243,7 @@ thead{
 					election: electionId,
 					candidate: candidateId,
 					votesReceived: votes,
+					redisKeys:{state: electionState, year: electionYear, type: electionType}
 				};
 
 				// Send the update request
@@ -1276,6 +1285,7 @@ thead{
 				const electionId = document.querySelector('input[name="_id"]').value;
 				fetch(`/api/elections/temp-election/party/delete/${partyId}/${electionId}`, {
 					method: 'DELETE',
+					body: JSON.stringify({redisKeys:{state: electionState, year: electionYear, type: electionType}})
 				}).then(res => res.json()).then((data) => {
 					if (data.success) {
 						alert('Party Deleted successfully!');
@@ -1291,6 +1301,7 @@ thead{
 				const electionId = document.querySelector('input[name="_id"]').value;
 				fetch(`/api/elections/temp-election/candidate/delete/${candidateId}/${electionId}`, {
 					method: 'DELETE',
+					body: JSON.stringify({redisKeys:{state: electionState, year: electionYear, type: electionType}})
 				}).then(res => res.json()).then((data) => {
 					if (data.success) {
 						alert('Candidate Deleted successfully!');
@@ -1324,6 +1335,7 @@ thead{
 					election: electionId,
 					party: partyId,
 					seatsWon: votes,
+					redisKeys:{state: electionState, year: electionYear, type: electionType}
 				};
 
 				// Send the update request
@@ -1542,7 +1554,8 @@ thead{
 				// Create the data to send
 				const requestData = {
 					election: electionId,
-					candidates: selectedCandidates.map(candidate => candidate.id)
+					candidates: selectedCandidates.map(candidate => candidate.id),
+					redisKeys:{state: electionState, year: electionYear, type: electionType}
 				};
 
 				// Send the PATCH request to add candidates

@@ -143,6 +143,12 @@ router.get("/cn-list", async (req, res, next) => {
       });
     }
 
+    const key = `cn_election_candidates_${constituencyName}_${state}_${year}_${type}`;
+    const cachedResult = await redis.get(key);
+    if (cachedResult) {
+      return res.json(cachedResult);
+    }
+
     // First, find the election to get its ID
     const election = await TempElection.findOne({
       state: state,
@@ -189,6 +195,8 @@ router.get("/cn-list", async (req, res, next) => {
           return { ...result, constituencyStatus: electionConstituency.status };
         })
       );
+
+    redis.set(key, candidates);
 
     res.json(candidates);
   } catch (error) {
