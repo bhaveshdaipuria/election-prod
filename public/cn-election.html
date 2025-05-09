@@ -301,7 +301,7 @@
             this.renderCandidates();
             this.lastFetchTime = now;
             if (newCandidatesData.length > 0) {
-              if (newCandidatesData[0].constituency[0].won !== "awaiting") {
+              if (newCandidatesData[0].constituency[0].won !== "ongoing") {
                 document.querySelector(".aage_piche").textContent = "हार / जीत";
               }
             }
@@ -341,9 +341,9 @@
           //   ? "status-icon--down"
           //   : "gray";
           const textColor = this.getContrastColor(candidate.party.color_code);
-          const won = constituencyStatus || "awaiting";
+          const won = constituencyStatus || "ongoing";
           const badgeText =
-            won !== "awaiting"
+            won !== "ongoing"
               ? won === "completed" && index === 0
                 ? "जीते"
                 : "हारे"
