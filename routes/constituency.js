@@ -91,6 +91,13 @@ router.get("/", async (req, res, next) => {
   try {
     const { state, year, type } = req.query;
 
+    const key = `cn_election_constituencies_${state}_${year}_${type}`;
+
+    const cachedResult = await redis.get(key);
+    if (cachedResult) {
+      return res.json(cachedResult);
+    }
+
     if (!state || !year || !type) {
       return res.status(400).json({
         success: false,
@@ -118,6 +125,8 @@ router.get("/", async (req, res, next) => {
       .populate({ path: "constituency", select: "-candidates" })
       .lean()
       .then((results) => results.map((result) => result.constituency));
+
+    redis.set(key, constituencies);
 
     res.json(constituencies);
   } catch (error) {
