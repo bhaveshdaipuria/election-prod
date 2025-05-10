@@ -282,11 +282,13 @@ router.patch(
       const { state, year, type } = redisKeys;
 
       // clear the election widgets cached result from redis
-      redis.delete(`election_widget`);
-      redis.delete(`bihar_election_map_${state}_${year}_${type}`);
-      redis.delete(`cn_election_constituencies_${state}_${year}_${type}`);
+      redis.delete(`widget_election_widget`);
+      redis.delete(`widget_bihar_election_map_${state}_${year}_${type}`);
+      redis.delete(
+        `widget_cn_election_constituencies_${state}_${year}_${type}`
+      );
       redis.deleteByPattern(
-        `cn_election_candidates_*_${state}_${year}_${type}`
+        `widget_cn_election_candidates_*_${state}_${year}_${type}`
       );
 
       return res.json({
@@ -325,10 +327,12 @@ router.patch("/temp-election/party/add", async (req, res) => {
     const { state, year, type } = redisKeys;
 
     // clear the election widgets cached result from redis
-    redis.delete(`election_widget`);
-    redis.delete(`bihar_election_map_${state}_${year}_${type}`);
-    redis.delete(`cn_election_constituencies_${state}_${year}_${type}`);
-    redis.deleteByPattern(`cn_election_candidates_*_${state}_${year}_${type}`);
+    redis.delete(`widget_election_widget`);
+    redis.delete(`widget_bihar_election_map_${state}_${year}_${type}`);
+    redis.delete(`widget_cn_election_constituencies_${state}_${year}_${type}`);
+    redis.deleteByPattern(
+      `widget_cn_election_candidates_*_${state}_${year}_${type}`
+    );
 
     return res.status(200).json({ message: "Party added successfully" });
   } catch (error) {
@@ -366,11 +370,13 @@ router.patch("/temp-election/main-info-update/:id", async (req, res) => {
     }
 
     // clear the election widgets cached result from redis
-    redis.delete(`election_widget`);
-    redis.delete(`bihar_election_map_${state}_${year}_${electionType}`);
-    redis.delete(`cn_election_constituencies_${state}_${year}_${electionType}`);
+    redis.delete(`widget_election_widget`);
+    redis.delete(`widget_bihar_election_map_${state}_${year}_${electionType}`);
+    redis.delete(
+      `widget_cn_election_constituencies_${state}_${year}_${electionType}`
+    );
     redis.deleteByPattern(
-      `cn_election_candidates_*_${state}_${year}_${electionType}`
+      `widget_cn_election_candidates_*_${state}_${year}_${electionType}`
     );
 
     return res
@@ -430,10 +436,12 @@ router.patch("/temp-election/candidate/add", async (req, res) => {
     const { state, year, type } = redisKeys;
 
     // clear the election widgets cached result from redis
-    redis.delete(`election_widget`);
-    redis.delete(`bihar_election_map_${state}_${year}_${type}`);
-    redis.delete(`cn_election_constituencies_${state}_${year}_${type}`);
-    redis.deleteByPattern(`cn_election_candidates_*_${state}_${year}_${type}`);
+    redis.delete(`widget_election_widget`);
+    redis.delete(`widget_bihar_election_map_${state}_${year}_${type}`);
+    redis.delete(`widget_cn_election_constituencies_${state}_${year}_${type}`);
+    redis.deleteByPattern(
+      `widget_cn_election_candidates_*_${state}_${year}_${type}`
+    );
 
     return res.status(200).json({ message: "Party added successfully" });
   } catch (error) {
@@ -503,11 +511,13 @@ router.delete(
       const { state, year, type } = redisKeys;
 
       // clear the election widgets cached result from redis
-      redis.delete(`election_widget`);
-      redis.delete(`bihar_election_map_${state}_${year}_${type}`);
-      redis.delete(`cn_election_constituencies_${state}_${year}_${type}`);
+      redis.delete(`widget_election_widget`);
+      redis.delete(`widget_bihar_election_map_${state}_${year}_${type}`);
+      redis.delete(
+        `widget_cn_election_constituencies_${state}_${year}_${type}`
+      );
       redis.deleteByPattern(
-        `cn_election_candidates_*_${state}_${year}_${type}`
+        `widget_cn_election_candidates_*_${state}_${year}_${type}`
       );
 
       return res.status(200).send({ success: true });
@@ -551,11 +561,13 @@ router.delete(
       const { state, year, type } = redisKeys;
 
       // clear the election widgets cached result from redis
-      redis.delete(`election_widget`);
-      redis.delete(`bihar_election_map_${state}_${year}_${type}`);
-      redis.delete(`cn_election_constituencies_${state}_${year}_${type}`);
+      redis.delete(`widget_election_widget`);
+      redis.delete(`widget_bihar_election_map_${state}_${year}_${type}`);
+      redis.delete(
+        `widget_cn_election_constituencies_${state}_${year}_${type}`
+      );
       redis.deleteByPattern(
-        `cn_election_candidates_*_${state}_${year}_${type}`
+        `widget_cn_election_candidates_*_${state}_${year}_${type}`
       );
 
       return res.status(200).send({ success: true });
@@ -589,10 +601,12 @@ router.put("/temp-election/candidate/update", async (req, res) => {
     const { state, year, type } = redisKeys;
 
     // clear the election widgets cached result from redis
-    redis.delete(`election_widget`);
-    redis.delete(`bihar_election_map_${state}_${year}_${type}`);
-    redis.delete(`cn_election_constituencies_${state}_${year}_${type}`);
-    redis.deleteByPattern(`cn_election_candidates_*_${state}_${year}_${type}`);
+    redis.delete(`widget_election_widget`);
+    redis.delete(`widget_bihar_election_map_${state}_${year}_${type}`);
+    redis.delete(`widget_cn_election_constituencies_${state}_${year}_${type}`);
+    redis.deleteByPattern(
+      `widget_cn_election_candidates_*_${state}_${year}_${type}`
+    );
 
     return res.status(200).json(updatedDocument);
   } catch (error) {
@@ -622,10 +636,12 @@ router.put("/temp-election/party/update", async (req, res) => {
     const { state, year, type } = redisKeys;
 
     // clear the election widgets cached result from redis
-    redis.delete(`election_widget`);
-    redis.delete(`bihar_election_map_${state}_${year}_${type}`);
-    redis.delete(`cn_election_constituencies_${state}_${year}_${type}`);
-    redis.deleteByPattern(`cn_election_candidates_*_${state}_${year}_${type}`);
+    redis.delete(`widget_election_widget`);
+    redis.delete(`widget_bihar_election_map_${state}_${year}_${type}`);
+    redis.delete(`widget_cn_election_constituencies_${state}_${year}_${type}`);
+    redis.deleteByPattern(
+      `widget_cn_election_candidates_*_${state}_${year}_${type}`
+    );
 
     return res.status(200).json(updatedDocument);
   } catch (error) {

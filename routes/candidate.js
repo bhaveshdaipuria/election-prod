@@ -143,7 +143,7 @@ router.get("/cn-list", async (req, res, next) => {
       });
     }
 
-    const key = `cn_election_candidates_${constituencyName}_${state}_${year}_${type}`;
+    const key = `widget_cn_election_candidates_${constituencyName}_${state}_${year}_${type}`;
     const cachedResult = await redis.get(key);
     if (cachedResult) {
       return res.json(cachedResult);

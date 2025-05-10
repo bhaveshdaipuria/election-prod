@@ -91,7 +91,7 @@ router.get("/", async (req, res, next) => {
   try {
     const { state, year, type } = req.query;
 
-    const key = `cn_election_constituencies_${state}_${year}_${type}`;
+    const key = `widget_cn_election_constituencies_${state}_${year}_${type}`;
 
     const cachedResult = await redis.get(key);
     if (cachedResult) {

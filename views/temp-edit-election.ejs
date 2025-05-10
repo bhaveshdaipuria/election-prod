@@ -253,6 +253,7 @@ thead{
 														</button>
 														<button type="button"
 															onclick="editParty('<%= party.party._id %>')"
+															style="background-color: rgb(244, 179, 68)"
 															class="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 mr-2">
 															<i
 																class="fas fa-edit"></i>
@@ -505,6 +506,7 @@ thead{
 														</button>
 														<button type="button"
 															onclick="editCandidate('<%= candidate.candidate._id %>')"
+															style="background-color: rgb(244, 179, 68)"
 															class="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 mr-2">
 															<i
 																class="fas fa-edit"></i>
@@ -1277,7 +1279,7 @@ thead{
 					alert('You do not have permission to edit party details.');
 					return;
 				}
-				window.location.href = `/edit-party/${partyId}`;
+				window.location.href = `/edit-party/${partyId}?state=${electionState}&year=${electionYear}&type=${electionType}`;
 			}
 
 
@@ -1589,7 +1591,7 @@ thead{
 					alert('You do not have permission to edit candidate details.');
 					return;
 				}
-				window.location.href = `/edit-candidate/${candidateId}`;
+				window.location.href = `/edit-candidate/${candidateId}?state=${electionState}&year=${electionYear}&type=${electionType}`;
 			}
 
 			// Initialize the page

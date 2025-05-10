@@ -45,7 +45,7 @@ router.get("/top-parties", async (req, res) => {
       "67a217ceaede35a3487141b8",
       "67a217e1aede35a3487141bc",
       "67a217f2aede35a3487141c0",
-      "67a21803aede35a3487141c6"
+      "67a21803aede35a3487141c6",
     ],
     jharkhand: [
       "673b16b4568e8acfd1213d6f",
