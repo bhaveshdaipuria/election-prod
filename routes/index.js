@@ -1494,7 +1494,7 @@ router.get("/elections/map/top-candidates", async (req, res) => {
         },
       },
       { $sort: { seatsWon: -1 } },
-    ])
+    ]);
 
     // Get constituency data with top candidates
     const constituencies = await CandidateElectioModel.aggregate([

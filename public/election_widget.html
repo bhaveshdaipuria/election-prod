@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,9 +7,8 @@
     <style>
       * {
         box-sizing: border-box;
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-          Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
         margin: 0;
         padding: 0;
       }
@@ -440,8 +439,7 @@
               <thead>
                 <tr>
                   <th>पार्टी</th>
-                  <th>आगे</th>
-                  <th>जीते</th>
+                  <th id="election_vote_status">जीते</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -472,7 +470,7 @@
           const stateName = params.get("state") || "Bihar";
           // This would be your actual API endpoint
           const response = await fetch(
-            `/elections/state-elections?state=${stateName}`,
+            `/elections/state-elections?state=${stateName}`
           );
 
           if (!response.ok) {
@@ -481,7 +479,6 @@
 
           const data = await response.json();
           processElectionData(data);
-          console.log(data);
         } catch (error) {
           console.error("Error fetching election data:", error);
         } finally {
@@ -492,8 +489,9 @@
 
       function processElectionData(data) {
         // Filter for Bihar elections
+
         const biharElections = data.filter(
-          (election) => election.state === "Bihar",
+          (election) => election.state === "Bihar"
         );
 
         if (!biharElections.length) {
@@ -531,6 +529,7 @@
                 : processedParties.reduce((sum, p) => sum + p.won, 0),
             majorityMark: election.halfWayMark,
             parties: processedParties,
+            status: election.status,
           };
         });
 
@@ -566,7 +565,7 @@
         const tabsContainer = document.querySelector(".election-tabs");
         const existingTabs = tabsContainer.querySelectorAll(".tab");
         const existingYears = Array.from(existingTabs).map(
-          (tab) => tab.textContent.trim().split(" ")[1],
+          (tab) => tab.textContent.trim().split(" ")[1]
         );
 
         if (JSON.stringify(existingYears) !== JSON.stringify(years)) {
@@ -580,6 +579,13 @@
               document.querySelector(".tab.active").classList.remove("active");
               this.classList.add("active");
               activeTabKey = this.textContent.trim();
+              const electionVoteStatus = document.querySelector(
+                "#election_vote_status"
+              );
+              electionVoteStatus.innerHTML =
+                electionData[activeTabKey].status === "completed"
+                  ? "जीते"
+                  : "आगे";
               renderElectionData(activeTabKey);
             });
             tabsContainer.appendChild(tab);
@@ -588,6 +594,12 @@
 
         // Render the latest election
         renderElectionData(activeTabKey);
+
+        const electionVoteStatus = document.querySelector(
+          "#election_vote_status"
+        );
+        electionVoteStatus.innerHTML =
+          electionData[activeTabKey].status === "completed" ? "जीते" : "आगे";
       }
 
       function renderElectionData(key) {
@@ -599,15 +611,18 @@
           data.majorityMark;
 
         // Update election year and progress info
-        document.getElementById("electionYear").textContent =
-          `${key} (${data.declaredSeats}/${data.totalSeats} सीटें)`;
-        document.getElementById("seatCounter").textContent =
-          `बहुमत: ${data.majorityMark} सीटें`;
+        document.getElementById(
+          "electionYear"
+        ).textContent = `${key} (${data.declaredSeats}/${data.totalSeats} सीटें)`;
+        document.getElementById(
+          "seatCounter"
+        ).textContent = `बहुमत: ${data.majorityMark} सीटें`;
 
         // Update progress bar
         const progressPercentage = (data.declaredSeats / data.totalSeats) * 100;
-        document.getElementById("progressFill").style.width =
-          `${progressPercentage}%`;
+        document.getElementById(
+          "progressFill"
+        ).style.width = `${progressPercentage}%`;
 
         // Update table
         const tbody = document.querySelector("tbody");
@@ -621,7 +636,6 @@
 							${party.name}
 						</div>
 					</td>
-					<td>0</td>
 					<td class="seats-won">${party.won}</td>
 				`;
           tbody.appendChild(row);
@@ -794,8 +808,9 @@
           text = `${hours} hour${hours > 1 ? "s" : ""} ago`;
         }
 
-        document.getElementById("lastUpdated").textContent =
-          `Last updated: ${text}`;
+        document.getElementById(
+          "lastUpdated"
+        ).textContent = `Last updated: ${text}`;
       }
 
       // Start auto-refresh
