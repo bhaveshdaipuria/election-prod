@@ -14,14 +14,12 @@ function addStyles() {
                 body {
                     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
                     background-color: #f5f5f5;
-                    padding: 20px;
                 }
 
                 .election-widget {
                     background: white;
                     border-radius: 12px;
                     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                    max-width: 400px;
                     margin: 0 auto;
                     overflow: hidden;
                 }
