@@ -29,9 +29,6 @@
             .election-widget {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
                 background-color: #f5f3f0;
-                padding: 40px 20px;
-                width: 100%;
-                position: relative;
             }
 
             .election-widget .loading {
@@ -63,9 +60,8 @@
             }
 
             .election-widget .container {
-                max-width: 1200px;
                 margin: 0 auto;
-                padding: 30px;
+                padding: 15px;
                 background: white;
                 border-radius: 16px;
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -75,7 +71,7 @@
                 display: flex;
                 align-items: center;
                 gap: 20px;
-                margin-bottom: 30px;
+                margin-bottom: 10px;
             }
 
             .election-widget .title {
@@ -120,7 +116,7 @@
             }
 
             .election-widget .total-seats {
-                margin-bottom: 30px;
+                margin-bottom: 10px;
                 font-size: 18px;
                 color: #4a5568;
             }
@@ -159,7 +155,6 @@
 
             .election-widget .progress-bar-container {
                 position: relative;
-                margin: 0 20px;
             }
 
             .election-widget .progress-bar {
@@ -206,7 +201,7 @@
                 background: white;
                 border: 2px solid #e2e8f0;
                 border-radius: 16px;
-                padding: 20px;
+                padding: 5px;
                 display: flex;
                 align-items: center;
                 gap: 15px;
@@ -221,8 +216,8 @@
             }
 
             .election-widget .party-icon {
-                width: 48px;
-                height: 48px;
+                width: 38px;
+                height: 38px;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
