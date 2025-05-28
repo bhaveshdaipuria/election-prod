@@ -13,11 +13,18 @@
       width: 100%;
       max-width: 100%;
       overflow: hidden;
+      max-height: 80vh;
+      overflow-y: auto;
     }
     .cnew-widget .cnew-header {
       padding: 0.75rem;
       background: #f8fafc;
       border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      height: 56px;
+      box-sizing: border-box;
     }
     .cnew-widget .cnew-select {
       width: 100%;
@@ -39,6 +46,10 @@
       color: #475569;
       background: #f8fafc;
       border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 56px;
+      z-index: 1;
+      box-sizing: border-box;
     }
     .cnew-widget .cnew-table td {
       padding: 0.75rem;
