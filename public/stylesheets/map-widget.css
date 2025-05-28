@@ -399,10 +399,6 @@
 	}
 
 	@media (max-width: 768px) {
-		.responsive-style {
-			/* top: -132px; */
-			width: 400px;
-		}
 		.main_title {
 			font-size: 20px;
 		}
