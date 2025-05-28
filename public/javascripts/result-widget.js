@@ -7,7 +7,7 @@
     title: "बिहार चुनाव परिणाम",
     apiEndpoint: "https://election.prabhatkhabar.com/elections/state-elections",
     state: "Bihar",
-    years: ["2010", "2015", "2020"],
+    years: ["2020", "2015", "2010"],
     defaultYear: "2020",
     loadingText: "डेटा लोड हो रहा है...",
     errorPrefix: "त्रुटि: ",
@@ -61,34 +61,35 @@
 
             .erw-widget .erw-container {
                 margin: 0 auto;
-                padding: 15px;
+                padding: 12px;
                 background: white;
-                border-radius: 16px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                border-radius: 12px;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+                max-width: 1200px;
             }
 
             .erw-widget .erw-header {
                 display: flex;
                 align-items: center;
-                gap: 20px;
-                margin-bottom: 10px;
+                gap: 16px;
+                margin-bottom: 8px;
             }
 
             .erw-widget .erw-title {
-                font-size: 32px;
+                font-size: 24px;
                 font-weight: 600;
                 color: #2d3748;
             }
 
             .erw-widget .erw-year-tabs {
                 display: flex;
-                gap: 10px;
+                gap: 8px;
             }
 
             .erw-widget .erw-year-tab {
-                padding: 8px 16px;
-                border-radius: 20px;
-                font-size: 16px;
+                padding: 6px 12px;
+                border-radius: 16px;
+                font-size: 14px;
                 font-weight: 500;
                 cursor: pointer;
                 transition: all 0.3s ease;
@@ -116,13 +117,13 @@
             }
 
             .erw-widget .erw-total-seats {
-                margin-bottom: 10px;
-                font-size: 18px;
+                margin-bottom: 8px;
+                font-size: 16px;
                 color: #4a5568;
             }
 
             .erw-widget .erw-main-results {
-                margin-bottom: 40px;
+                margin-bottom: 24px;
                 position: relative;
             }
 
@@ -130,8 +131,8 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
-                margin-bottom: 15px;
-                padding: 0 20px;
+                margin-bottom: 12px;
+                padding: 0 16px;
             }
 
             .erw-widget .erw-party-result {
@@ -142,13 +143,13 @@
             }
 
             .erw-widget .erw-party-result-name {
-                font-size: 18px;
+                font-size: 16px;
                 font-weight: 600;
                 color: #2d3748;
             }
 
             .erw-widget .erw-party-result-seats {
-                font-size: 28px;
+                font-size: 24px;
                 font-weight: 700;
                 color: #2d3748;
             }
@@ -158,12 +159,12 @@
             }
 
             .erw-widget .erw-progress-bar {
-                height: 16px;
+                height: 12px;
                 background-color: #e2e8f0;
-                border-radius: 8px;
+                border-radius: 6px;
                 overflow: hidden;
                 position: relative;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), inset 0 1px 3px rgba(0, 0, 0, 0.08);
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(0, 0, 0, 0.06);
                 display: flex;
             }
 
@@ -192,19 +193,19 @@
 
             .erw-widget .erw-party-cards {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 20px;
-                margin-top: 30px;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 12px;
+                margin-top: 20px;
             }
 
             .erw-widget .erw-party-card {
                 background: white;
-                border: 2px solid #e2e8f0;
-                border-radius: 16px;
-                padding: 5px;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 8px;
                 display: flex;
                 align-items: center;
-                gap: 15px;
+                gap: 10px;
                 transition: all 0.3s ease;
                 cursor: pointer;
             }
@@ -216,15 +217,16 @@
             }
 
             .erw-widget .erw-party-icon {
-                width: 38px;
-                height: 38px;
+                width: 32px;
+                height: 32px;
+                min-width: 32px;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 font-weight: bold;
                 color: white;
-                font-size: 12px;
+                font-size: 11px;
                 background-size: cover;
                 background-position: center;
                 overflow: hidden;
@@ -239,44 +241,70 @@
 
             .erw-widget .erw-party-info {
                 flex-grow: 1;
+                min-width: 0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
             }
 
             .erw-widget .erw-party-name {
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: 600;
                 color: #2d3748;
-                margin-bottom: 4px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .erw-widget .erw-party-seats {
-                font-size: 24px;
+                font-size: 16px;
                 font-weight: 700;
                 color: #1a202c;
+                white-space: nowrap;
             }
 
             @media (max-width: 768px) {
                 .erw-widget .erw-container {
-                    padding: 20px;
+                    padding: 16px;
                 }
 
                 .erw-widget .erw-title {
-                    font-size: 24px;
+                    font-size: 20px;
                 }
 
                 .erw-widget .erw-header {
                     flex-direction: column;
-                    gap: 15px;
+                    gap: 12px;
                     text-align: center;
                 }
 
                 .erw-widget .erw-results-labels {
-                    flex-direction: column;
-                    gap: 15px;
+                    flex-direction: row;
+                    gap: 12px;
                     text-align: center;
                 }
 
                 .erw-widget .erw-party-cards {
                     grid-template-columns: 1fr;
+                }
+
+                .erw-widget .erw-party-card {
+                    padding: 10px;
+                }
+
+                .erw-widget .erw-party-icon {
+                    width: 36px;
+                    height: 36px;
+                    min-width: 36px;
+                }
+
+                .erw-widget .erw-party-name {
+                    font-size: 15px;
+                }
+
+                .erw-widget .erw-party-seats {
+                    font-size: 18px;
                 }
             }
         `;
@@ -584,12 +612,6 @@
       // Party card interactions
       const partyCards = this.container.querySelectorAll(".erw-party-card");
       partyCards.forEach((card) => {
-        card.addEventListener("click", () => {
-          const partyName = card.querySelector(".erw-party-name").textContent;
-          const partySeats = card.querySelector(".erw-party-seats").textContent;
-          alert(`${partyName}: ${partySeats} ${this.config.seatsText}`);
-        });
-
         card.addEventListener("mouseenter", () => {
           card.style.transform = "translateY(-4px)";
         });
