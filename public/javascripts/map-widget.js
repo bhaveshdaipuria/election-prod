@@ -1,70 +1,157 @@
 // Map Widget Class
 class MapWidget {
-    constructor() {
-        this.timer = null;
-        this.currentTippy = null;
-        this.loading = false;
-        this.loadDependencies().then(() => {
-            this.init();
-        });
+  constructor() {
+    this.timer = null;
+    this.currentTippy = null;
+    this.loading = false;
+    this.currentYear = null; // Add this to track current year
+    this.loadDependencies().then(() => {
+      this.init();
+    });
+    this.STATE = "";
+  }
+
+  async loadDependencies() {
+    // Base URL for resources
+    const baseUrl = "https://election.prabhatkhabar.com";
+
+    // Load CSS files
+    const cssFiles = [
+      `${baseUrl}/stylesheets/tippy.css`,
+      `${baseUrl}/stylesheets/style.css`,
+      `${baseUrl}/stylesheets/tailwind.css`,
+      `${baseUrl}/stylesheets/css-bootstrap.min.css`,
+      `${baseUrl}/stylesheets/map-widget.css`,
+    ];
+
+    // Load JavaScript files
+    const jsFiles = [
+      `${baseUrl}/javascripts/popper.min.js`,
+      `${baseUrl}/javascripts/tippy.js`,
+      "https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js",
+    ];
+
+    // Load CSS files
+    for (const cssFile of cssFiles) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = cssFile;
+      document.head.appendChild(link);
     }
 
-    async loadDependencies() {
-        // Base URL for resources
-        const baseUrl = 'https://election.prabhatkhabar.com';
+    // Load JavaScript files
+    for (const jsFile of jsFiles) {
+      await new Promise((resolve) => {
+        const script = document.createElement("script");
+        script.src = jsFile;
+        script.onload = resolve;
+        document.head.appendChild(script);
+      });
+    }
+  }
 
-        // Load CSS files
-        const cssFiles = [
-            `${baseUrl}/stylesheets/tippy.css`,
-            `${baseUrl}/stylesheets/style.css`,
-            `${baseUrl}/stylesheets/tailwind.css`,
-            `${baseUrl}/stylesheets/css-bootstrap.min.css`,
-            `${baseUrl}/stylesheets/map-widget.css`
-        ];
+  // Add styles for year tabs
+  addYearTabStyles() {
+    const styleId = "year-tabs-styles";
 
-        // Load JavaScript files
-        const jsFiles = [
-            `${baseUrl}/javascripts/popper.min.js`,
-            `${baseUrl}/javascripts/tippy.js`,
-            'https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js'
-        ];
+    // Check if styles already exist
+    if (document.getElementById(styleId)) {
+      return;
+    }
 
-        // Load CSS files
-        for (const cssFile of cssFiles) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = cssFile;
-            document.head.appendChild(link);
+    const style = document.createElement("style");
+    style.id = styleId;
+    style.textContent = `
+      #yearTabs {
+        display: flex;
+        gap: 12px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        align-items: center;
+		justify-content: center;
+      }
+
+      .year-tab {
+        padding: 8px 16px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        background-color: #fff;
+        color: #666;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        user-select: none;
+        min-width: 60px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .year-tab:hover {
+        border-color: #ff6b35;
+        color: #ff6b35;
+        background-color: #fff8f5;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(255, 107, 53, 0.2);
+      }
+
+      .year-tab.active {
+        background-color: #ff6b35;
+        border-color: #ff6b35;
+        color: #fff;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
+      }
+
+      .year-tab.active:hover {
+        background-color: #e55a2b;
+        border-color: #e55a2b;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(229, 90, 43, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        #yearTabs {
+          gap: 8px;
+          margin: 15px 0;
         }
-
-        // Load JavaScript files
-        for (const jsFile of jsFiles) {
-            await new Promise((resolve) => {
-                const script = document.createElement('script');
-                script.src = jsFile;
-                script.onload = resolve;
-                document.head.appendChild(script);
-            });
+        
+        .year-tab {
+          padding: 6px 12px;
+          font-size: 13px;
+          min-width: 50px;
         }
-    }
+      }
+    `;
 
-    init() {
-        this.injectHTML();
-        this.initializeMapInteractions();
-        this.getData();
-        this.setupInterval();
-        this.setupResizeHandler();
-    }
+    document.head.appendChild(style);
+  }
 
-    injectHTML() {
-        const container = document.createElement('div');
-        container.id = 'main-delhi';
-        container.innerHTML = `
+  init() {
+    this.addYearTabStyles(); // Add styles first
+    this.injectHTML();
+    this.initializeMapInteractions();
+    this.STATE = "Bihar";
+    this.createYearTabs();
+    this.getData();
+    this.setupInterval();
+    this.setupResizeHandler();
+  }
+
+  injectHTML() {
+    const container = document.createElement("div");
+    container.id = "main-delhi";
+
+    container.innerHTML = `
             <div id="popover" class="popover"></div>
             <h5 class="main_title text-[16px] md:text-[35px] text-center font-bold"></h5>
 
             <div id="content">
                 <!-- live results start -->
+            </div>
+
+			<div id="yearTabs">
+               
             </div>
 
             <div class="svg_container pb-12 flex flex-col items-center justify-center" id="svg_container" style="width: 100%">
@@ -2825,155 +2912,221 @@ class MapWidget {
                 <div class="responsive-style party_name_color flex gap-4 text-md"></div>
             </div>
         `;
-        document.body.appendChild(container);
+
+    document.body.appendChild(container);
+  }
+
+  updateLoading() {
+    const svg = document.querySelector(".svg_container");
+    let loadingDiv = document.querySelector(".loader");
+
+    if (!loadingDiv) {
+      loadingDiv = document.createElement("div");
+      loadingDiv.classList.add("loader");
+      loadingDiv.style.position = "absolute";
+      loadingDiv.style.top = "50%";
+      loadingDiv.style.left = "50%";
+      loadingDiv.style.transform = "translate(-50%, -50%)";
+      svg.style.position = "relative";
+      svg.appendChild(loadingDiv);
     }
 
-    updateLoading() {
-        const svg = document.querySelector(".svg_container");
-        let loadingDiv = document.querySelector(".loader");
-        
-        if (!loadingDiv) {
-            loadingDiv = document.createElement("div");
-            loadingDiv.classList.add("loader");
-            loadingDiv.style.position = "absolute";
-            loadingDiv.style.top = "50%";
-            loadingDiv.style.left = "50%";
-            loadingDiv.style.transform = "translate(-50%, -50%)";
-            svg.style.position = "relative";
-            svg.appendChild(loadingDiv);
-        }
-
-        if (this.loading) {
-            loadingDiv.style.display = "block";
-            document.querySelector("svg").style.display = "none";
-        } else {
-            document.querySelector("svg").style.display = "block";
-            loadingDiv.style.display = "none";
-        }
+    if (this.loading) {
+      loadingDiv.style.display = "block";
+      document.querySelector("svg").style.display = "none";
+    } else {
+      document.querySelector("svg").style.display = "block";
+      loadingDiv.style.display = "none";
     }
+  }
 
-    sendHeight() {
-        const element = document.querySelector("#main-delhi");
-        const height = element ? element.offsetHeight : 0;
-        window.parent.postMessage({election_iframe: height}, "*");
+  sendHeight() {
+    const element = document.querySelector("#main-delhi");
+    const height = element ? element.offsetHeight : 0;
+    window.parent.postMessage({ election_iframe: height }, "*");
+  }
+
+  async getData(clickedYear = "2020") {
+    const params = new URLSearchParams(document.location.search);
+    let stateName = params.get("state") || "Bihar";
+    stateName = stateName[0].toUpperCase() + stateName.slice(1);
+    const type = params.get("type") || "general";
+
+    try {
+      const response = await fetch(
+        `https://election.prabhatkhabar.com/elections/map/top-candidates?state=${stateName}&year=${clickedYear}&type=${type}`
+      );
+      const data = await response.json();
+
+      document.querySelector(
+        ".main_title"
+      ).innerText = `${data.data.electionName}`;
+      this.renderPartiesColorAndName(data.data.parties);
+      this.applyColorsAndPopovers(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
+  }
 
-    async getData() {
-        const params = new URLSearchParams(document.location.search);
-        let stateName = params.get("state") || "Bihar";
-        stateName = stateName[0].toUpperCase() + stateName.slice(1);
-        const year = params.get("year") || "2020";
-        const type = params.get("type") || "general";
+  async createYearTabs() {
+    const yearTabs = document.querySelector("#yearTabs");
 
-        try {
-            const response = await fetch(
-                `https://election.prabhatkhabar.com/elections/map/top-candidates?state=${stateName}&year=${year}&type=${type}`
-            );
-            const data = await response.json();
-            
-            document.querySelector(".main_title").innerText = `${data.data.electionName}`;
-            this.renderPartiesColorAndName(data.data.parties);
-            this.applyColorsAndPopovers(data);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-    }
+    try {
+      const result = await fetch(
+        `https://election.prabhatkhabar.com/election/years/Bihar`
+      );
+      const allYears = (await result.json()).data.availableYears;
 
-    renderPartiesColorAndName(parties) {
-        const partyContainer = document.querySelector(".party_name_color");
-        partyContainer.innerHTML = "";
-        
-        for (let i = 0; i < 10; i++) {
-            const party = parties[i];
-            if (!party) continue;
+      console.log(allYears);
 
-            const partyElement = document.createElement("div");
-            partyElement.style.display = "flex";
-            partyElement.style.alignItems = "center";
-            partyElement.style.gap = "2px";
+      // Fix: Set currentYear as instance property
+      this.currentYear = allYears[0];
 
-            const partyColorElement = document.createElement("span");
-            partyColorElement.style.backgroundColor = party.partyColor;
-            partyColorElement.style.height = "12px";
-            partyColorElement.style.width = "12px";
-            partyColorElement.style.borderRadius = "50%";
+      const years = [...new Set(allYears.map((item) => item))].sort(
+        (a, b) => b - a
+      );
 
-            const partyNameElement = document.createElement("span");
-            partyNameElement.innerText = party.partyName;
+      yearTabs.innerHTML = "";
 
-            partyElement.appendChild(partyColorElement);
-            partyElement.appendChild(partyNameElement);
-            partyContainer.appendChild(partyElement);
-        }
-    }
+      console.log(years);
 
-    applyColorsAndPopovers(data) {
-        data.data.constituencies.forEach((constituency) => {
-            const constituencyId = `cns-${constituency.constituencyId}`;
-            const path = document.querySelector(`path[data-id="${constituencyId}"]`);
-
-            if (path) {
-                const candidate = constituency.candidates[0];
-                const trailingCandidate = constituency.candidates[1];
-
-                path.setAttribute("data-constituency", constituency.constituencyName || "");
-
-                if (candidate) {
-                    path.setAttribute("data-candidate", candidate.name || "Unknown");
-                    path.setAttribute("data-totalVotes", candidate.votesReceived || "0");
-                    path.style.fill = candidate.partyColor;
-                    path.setAttribute("data-partyName", candidate.partyName || "N/A");
-                    path.setAttribute("data-partyLogo", candidate?.party?.party_logo || "");
-
-                    if (trailingCandidate) {
-                        path.setAttribute("data-trail-partyLogo", trailingCandidate?.party?.party_logo || "");
-                        path.setAttribute("data-trail-candidate", trailingCandidate.name || "");
-                        path.setAttribute("data-trail-totalVotes", trailingCandidate?.votesReceived || "");
-                        path.setAttribute("data-trail-partyName", trailingCandidate?.partyName || "");
-                    }
-                }
-            }
+      years.forEach((year) => {
+        const tab = document.createElement("div");
+        tab.className = `year-tab ${year === this.currentYear ? "active" : ""}`;
+        tab.textContent = year;
+        tab.addEventListener("click", () => {
+          this.currentYear = year;
+          this.updateActiveTab();
+          // Optionally reload data for the selected year
+          this.getData(this.currentYear.toString());
         });
+        yearTabs.appendChild(tab);
+      });
+    } catch (error) {
+      console.error("Error fetching years:", error);
+    }
+  }
+
+  updateActiveTab() {
+    document.querySelectorAll(".year-tab").forEach((tab) => {
+      tab.classList.remove("active");
+      if (parseInt(tab.textContent) === this.currentYear) {
+        tab.classList.add("active");
+      }
+    });
+  }
+
+  renderPartiesColorAndName(parties) {
+    const partyContainer = document.querySelector(".party_name_color");
+    partyContainer.innerHTML = "";
+
+    for (let i = 0; i < 10; i++) {
+      const party = parties[i];
+      if (!party) continue;
+
+      const partyElement = document.createElement("div");
+      partyElement.style.display = "flex";
+      partyElement.style.alignItems = "center";
+      partyElement.style.gap = "2px";
+
+      const partyColorElement = document.createElement("span");
+      partyColorElement.style.backgroundColor = party.partyColor;
+      partyColorElement.style.height = "12px";
+      partyColorElement.style.width = "12px";
+      partyColorElement.style.borderRadius = "50%";
+
+      const partyNameElement = document.createElement("span");
+      partyNameElement.innerText = party.partyName;
+
+      partyElement.appendChild(partyColorElement);
+      partyElement.appendChild(partyNameElement);
+      partyContainer.appendChild(partyElement);
+    }
+  }
+
+  applyColorsAndPopovers(data) {
+    data.data.constituencies.forEach((constituency) => {
+      const constituencyId = `cns-${constituency.constituencyId}`;
+      const path = document.querySelector(`path[data-id="${constituencyId}"]`);
+
+      if (path) {
+        const candidate = constituency.candidates[0];
+        const trailingCandidate = constituency.candidates[1];
+
+        path.setAttribute(
+          "data-constituency",
+          constituency.constituencyName || ""
+        );
+
+        if (candidate) {
+          path.setAttribute("data-candidate", candidate.name || "Unknown");
+          path.setAttribute("data-totalVotes", candidate.votesReceived || "0");
+          path.style.fill = candidate.partyColor;
+          path.setAttribute("data-partyName", candidate.partyName || "N/A");
+          path.setAttribute(
+            "data-partyLogo",
+            candidate?.party?.party_logo || ""
+          );
+
+          if (trailingCandidate) {
+            path.setAttribute(
+              "data-trail-partyLogo",
+              trailingCandidate?.party?.party_logo || ""
+            );
+            path.setAttribute(
+              "data-trail-candidate",
+              trailingCandidate.name || ""
+            );
+            path.setAttribute(
+              "data-trail-totalVotes",
+              trailingCandidate?.votesReceived || ""
+            );
+            path.setAttribute(
+              "data-trail-partyName",
+              trailingCandidate?.partyName || ""
+            );
+          }
+        }
+      }
+    });
+  }
+
+  showPopover(event, path) {
+    const candidate = path.getAttribute("data-candidate") || "Unknown";
+    const totalVotes = path.getAttribute("data-totalVotes") || "0";
+    const partyName = path.getAttribute("data-partyName") || "N/A";
+    const color = path.getAttribute("data-color") || "#000";
+    const constituency = path.getAttribute("data-name" || "Unknown");
+    const won = path.getAttribute("data-won") || "awaiting";
+    const partyLogo =
+      path.getAttribute("data-partyLogo") ||
+      "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=";
+
+    const trailCandidate =
+      path.getAttribute("data-trail-candidate") || "Unknown";
+    const trailTotalVotes = path.getAttribute("data-trail-totalVotes") || "0";
+    const trailPartyName = path.getAttribute("data-trail-partyName") || "N/A";
+    const trailPartyLogo =
+      path.getAttribute("data-trail-partyLogo") ||
+      "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=";
+
+    const showColors = Number(trailTotalVotes + totalVotes) > 0;
+
+    if (this.currentTippy) {
+      this.currentTippy.destroy();
     }
 
-    showPopover(event, path) {
-        const candidate = path.getAttribute("data-candidate") || "Unknown";
-        const totalVotes = path.getAttribute("data-totalVotes") || "0";
-        const partyName = path.getAttribute("data-partyName") || "N/A";
-        const color = path.getAttribute("data-color") || "#000";
-        const constituency = path.getAttribute("data-name" || "Unknown");
-        const won = path.getAttribute("data-won") || "awaiting";
-        const partyLogo =
-            path.getAttribute("data-partyLogo") ||
-            "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=";
+    const badgeText =
+      won && won !== "awaiting"
+        ? won === "won"
+          ? "जीते"
+          : "हारे"
+        : showColors
+        ? "LEADING"
+        : "AWAITING";
 
-        const trailCandidate =
-            path.getAttribute("data-trail-candidate") || "Unknown";
-        const trailTotalVotes =
-            path.getAttribute("data-trail-totalVotes") || "0";
-        const trailPartyName =
-            path.getAttribute("data-trail-partyName") || "N/A";
-        const trailPartyLogo =
-            path.getAttribute("data-trail-partyLogo") ||
-            "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=";
-
-        const showColors = Number(trailTotalVotes + totalVotes) > 0;
-
-        if (this.currentTippy) {
-            this.currentTippy.destroy();
-        }
-
-        const badgeText =
-            won && won !== "awaiting"
-                ? won === "won"
-                    ? "जीते"
-                    : "हारे"
-                : showColors
-                    ? "LEADING"
-                    : "AWAITING";
-
-        this.currentTippy = tippy(event.target, {
-            content: `
+    this.currentTippy = tippy(event.target, {
+      content: `
                 <div class="popover-container">
                     <div class="card">
                         <div class="constituency-header">
@@ -2981,10 +3134,16 @@ class MapWidget {
                         </div>
 
                         <!-- Winner Candidate -->
-                        <div class="candidate-section winner" style="border-left: ${showColors ? "" : "#D3D3D3"};">
+                        <div class="candidate-section winner" style="border-left: ${
+                          showColors ? "" : "#D3D3D3"
+                        };">
                             <div class="candidate-header">
                                 <span class="candidate-name">${candidate}</span>
-                                <span class="status-badge status-won" style="background-color: ${showColors ? "" : "#9ca3af"}; color: ${showColors ? "" : "white"}">${won !== "awaiting" ? "जीते" : showColors ? "आगे" : "कुछ देर में"}</span>
+                                <span class="status-badge status-won" style="background-color: ${
+                                  showColors ? "" : "#9ca3af"
+                                }; color: ${showColors ? "" : "white"}">${
+        won !== "awaiting" ? "जीते" : showColors ? "आगे" : "कुछ देर में"
+      }</span>
                             </div>
                             <div class="party-votes">
                                 <div class="party-info">
@@ -2996,15 +3155,23 @@ class MapWidget {
                             </div>
                             <div class="margin-info">
                                 <span class="margin-label">कुल वोट</span>
-                                <span class="margin-value-won" style="color: ${showColors ? "" : "gray"}">${totalVotes}</span>
+                                <span class="margin-value-won" style="color: ${
+                                  showColors ? "" : "gray"
+                                }">${totalVotes}</span>
                             </div>
                         </div>
 
                         <!-- Runner-up Candidate -->
-                        <div class="candidate-section trailing" style="border-left: ${showColors ? "" : "#D3D3D3"};">
+                        <div class="candidate-section trailing" style="border-left: ${
+                          showColors ? "" : "#D3D3D3"
+                        };">
                             <div class="candidate-header">
                                 <span class="candidate-name">${trailCandidate}</span>
-                                <span class="status-badge status-trailing" style="background-color: ${showColors ? "" : "#9ca3af"}; color: ${showColors ? "" : "white"}">${won !== "awaiting" ? "हारे" : showColors ? "पीछे" : "कुछ देर में"}</span>
+                                <span class="status-badge status-trailing" style="background-color: ${
+                                  showColors ? "" : "#9ca3af"
+                                }; color: ${showColors ? "" : "white"}">${
+        won !== "awaiting" ? "हारे" : showColors ? "पीछे" : "कुछ देर में"
+      }</span>
                             </div>
                             <div class="party-votes">
                                 <div class="party-info">
@@ -3016,7 +3183,9 @@ class MapWidget {
                             </div>
                             <div class="margin-info">
                                 <span class="margin-label">कुल वोट</span>
-                                <span class="margin-value-trailing" style="color: ${showColors ? "" : "gray"}">${trailTotalVotes}</span>
+                                <span class="margin-value-trailing" style="color: ${
+                                  showColors ? "" : "gray"
+                                }">${trailTotalVotes}</span>
                             </div>
                         </div>
 
@@ -3024,64 +3193,64 @@ class MapWidget {
                     </div>
                 </div>
             `,
-            placement: "top",
-            arrow: true,
-            interactive: false,
-            trigger: "manual",
-            allowHTML: true,
-            theme: "light",
-            hideOnClick: false,
-            delay: [0, 0],
-            showOnInit: false,
-            onShow(instance) {
-                path.style.opacity = "0.6";
-            },
-            onHide(instance) {
-                path.style.opacity = "1";
-            },
+      placement: "top",
+      arrow: true,
+      interactive: false,
+      trigger: "manual",
+      allowHTML: true,
+      theme: "light",
+      hideOnClick: false,
+      delay: [0, 0],
+      showOnInit: false,
+      onShow(instance) {
+        path.style.opacity = "0.6";
+      },
+      onHide(instance) {
+        path.style.opacity = "1";
+      },
+    });
+
+    this.currentTippy.show();
+  }
+
+  initializeMapInteractions() {
+    const paths = document.querySelectorAll("path");
+    if (paths) {
+      paths.forEach((path) => {
+        path.addEventListener("mouseenter", (e) => {
+          this.showPopover(e, path);
         });
 
-        this.currentTippy.show();
+        path.addEventListener("mouseleave", () => {
+          if (this.currentTippy) {
+            this.currentTippy.hide();
+          }
+        });
+
+        path.addEventListener("click", (e) => {
+          if (this.isTouchDevice()) {
+            this.showPopover(e, path);
+          }
+        });
+      });
     }
+  }
 
-    initializeMapInteractions() {
-        const paths = document.querySelectorAll("path");
-        if (paths) {
-            paths.forEach((path) => {
-                path.addEventListener("mouseenter", (e) => {
-                    this.showPopover(e, path);
-                });
+  isTouchDevice() {
+    return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  }
 
-                path.addEventListener("mouseleave", () => {
-                    if (this.currentTippy) {
-                        this.currentTippy.hide();
-                    }
-                });
+  setupInterval() {
+    setInterval(() => this.getData(this.currentYear.toString()), 30000);
+  }
 
-                path.addEventListener("click", (e) => {
-                    if (this.isTouchDevice()) {
-                        this.showPopover(e, path);
-                    }
-                });
-            });
-        }
-    }
-
-    isTouchDevice() {
-        return "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    }
-
-    setupInterval() {
-        setInterval(() => this.getData(), 30000);
-    }
-
-    setupResizeHandler() {
-        window.onload = () => this.sendHeight();
-        window.onresize = () => this.sendHeight();
-    }
+  setupResizeHandler() {
+    window.onload = () => this.sendHeight();
+    window.onresize = () => this.sendHeight();
+  }
 }
 
 // Initialize the widget when the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new MapWidget();
+document.addEventListener("DOMContentLoaded", () => {
+  new MapWidget();
 });
