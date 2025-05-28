@@ -3,12 +3,12 @@
 
   // Default configuration
   const DEFAULT_CONFIG = {
-    containerId: "rw-container",
+    containerId: "election-results-widget",
     title: "चुनाव परिणाम",
-    apiEndpoint: "https://election.prabhatkhabar.com/elections/state-elections",
-    state: "Bihar",
+    apiEndpoint: null,
+    state: null,
     years: [],
-    defaultYear: 2020,
+    defaultYear: null,
     loadingText: "डेटा लोड हो रहा है...",
     errorPrefix: "त्रुटि: ",
     retryText: "पुनः प्रयास करें",
@@ -20,18 +20,18 @@
 
   // CSS Styles - Your original design
   const CSS_STYLES = `
-            .rw-widget * {
+            .election-widget * {
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
             }
 
-            .rw-widget {
+            .election-widget {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
                 background-color: #f5f3f0;
             }
 
-            .rw-widget .rw-loading {
+            .election-widget .loading {
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -40,7 +40,7 @@
                 color: #4a5568;
             }
 
-            .rw-widget .rw-error {
+            .election-widget .error {
                 background-color: #fed7d7;
                 color: #c53030;
                 padding: 20px;
@@ -49,7 +49,7 @@
                 text-align: center;
             }
 
-            .rw-widget .rw-error button {
+            .election-widget .error button {
                 margin-top: 10px;
                 padding: 8px 16px;
                 background-color: #c53030;
@@ -59,7 +59,7 @@
                 cursor: pointer;
             }
 
-            .rw-widget .rw-container {
+            .election-widget .container {
                 margin: 0 auto;
                 padding: 15px;
                 background: white;
@@ -67,25 +67,25 @@
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             }
 
-            .rw-widget .rw-header {
+            .election-widget .header {
                 display: flex;
                 align-items: center;
                 gap: 20px;
                 margin-bottom: 10px;
             }
 
-            .rw-widget .rw-title {
+            .election-widget .title {
                 font-size: 32px;
                 font-weight: 600;
                 color: #2d3748;
             }
 
-            .rw-widget .rw-year-tabs {
+            .election-widget .year-tabs {
                 display: flex;
                 gap: 10px;
             }
 
-            .rw-widget .rw-year-tab {
+            .election-widget .year-tab {
                 padding: 8px 16px;
                 border-radius: 20px;
                 font-size: 16px;
@@ -96,37 +96,37 @@
                 background: none;
             }
 
-            .rw-widget .rw-year-tab.active {
+            .election-widget .year-tab.active {
                 background-color: #ff8c42;
                 color: white;
             }
 
-            .rw-widget .rw-year-tab:not(.active) {
+            .election-widget .year-tab:not(.active) {
                 background-color: transparent;
                 color: #718096;
             }
 
-            .rw-widget .rw-year-tab:hover:not(.active) {
+            .election-widget .year-tab:hover:not(.active) {
                 background-color: #e2e8f0;
             }
 
-            .rw-widget .rw-year-tab:disabled {
+            .election-widget .year-tab:disabled {
                 opacity: 0.5;
                 cursor: not-allowed;
             }
 
-            .rw-widget .rw-total-seats {
+            .election-widget .total-seats {
                 margin-bottom: 10px;
                 font-size: 18px;
                 color: #4a5568;
             }
 
-            .rw-widget .rw-main-results {
+            .election-widget .main-results {
                 margin-bottom: 40px;
                 position: relative;
             }
 
-            .rw-widget .rw-results-labels {
+            .election-widget .results-labels {
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
@@ -134,30 +134,30 @@
                 padding: 0 20px;
             }
 
-            .rw-widget .rw-party-result {
+            .election-widget .party-result {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 gap: 5px;
             }
 
-            .rw-widget .rw-party-result-name {
+            .election-widget .party-result-name {
                 font-size: 18px;
                 font-weight: 600;
                 color: #2d3748;
             }
 
-            .rw-widget .rw-party-result-seats {
+            .election-widget .party-result-seats {
                 font-size: 28px;
                 font-weight: 700;
                 color: #2d3748;
             }
 
-            .rw-widget .rw-progress-bar-container {
+            .election-widget .progress-bar-container {
                 position: relative;
             }
 
-            .rw-widget .rw-progress-bar {
+            .election-widget .progress-bar {
                 height: 16px;
                 background-color: #e2e8f0;
                 border-radius: 8px;
@@ -167,20 +167,20 @@
                 display: flex;
             }
 
-            .rw-widget .rw-party-segment {
+            .election-widget .party-segment {
                 transition: width 0.8s ease;
                 height: 100%;
             }
 
-            .rw-widget .rw-party-segment:first-child {
+            .election-widget .party-segment:first-child {
                 border-radius: 8px 0 0 8px;
             }
 
-            .rw-widget .rw-party-segment:last-child {
+            .election-widget .party-segment:last-child {
                 border-radius: 0 8px 8px 0;
             }
 
-            .rw-widget .rw-majority-divider {
+            .election-widget .majority-divider {
                 position: absolute;
                 top: -8px;
                 height: 32px;
@@ -190,14 +190,14 @@
                 transform: translateX(-50%);
             }
 
-            .rw-widget .rw-party-cards {
+            .election-widget .party-cards {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 20px;
                 margin-top: 30px;
             }
 
-            .rw-widget .rw-party-card {
+            .election-widget .party-card {
                 background: white;
                 border: 2px solid #e2e8f0;
                 border-radius: 16px;
@@ -209,13 +209,13 @@
                 cursor: pointer;
             }
 
-            .rw-widget .rw-party-card:hover {
+            .election-widget .party-card:hover {
                 border-color: #cbd5e0;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             }
 
-            .rw-widget .rw-party-icon {
+            .election-widget .party-icon {
                 width: 38px;
                 height: 38px;
                 border-radius: 50%;
@@ -230,52 +230,52 @@
                 overflow: hidden;
             }
 
-            .rw-widget .rw-party-icon img {
+            .election-widget .party-icon img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
                 border-radius: 50%;
             }
 
-            .rw-widget .rw-party-info {
+            .election-widget .party-info {
                 flex-grow: 1;
             }
 
-            .rw-widget .rw-party-name {
+            .election-widget .party-name {
                 font-size: 16px;
                 font-weight: 600;
                 color: #2d3748;
                 margin-bottom: 4px;
             }
 
-            .rw-widget .rw-party-seats {
+            .election-widget .party-seats {
                 font-size: 24px;
                 font-weight: 700;
                 color: #1a202c;
             }
 
             @media (max-width: 768px) {
-                .rw-widget .rw-container {
+                .election-widget .container {
                     padding: 20px;
                 }
 
-                .rw-widget .rw-title {
+                .election-widget .title {
                     font-size: 24px;
                 }
 
-                .rw-widget .rw-header {
+                .election-widget .header {
                     flex-direction: column;
                     gap: 15px;
                     text-align: center;
                 }
 
-                .rw-widget .rw-results-labels {
+                .election-widget .results-labels {
                     flex-direction: column;
                     gap: 15px;
                     text-align: center;
                 }
 
-                .rw-widget .rw-party-cards {
+                .election-widget .party-cards {
                     grid-template-columns: 1fr;
                 }
             }
@@ -420,12 +420,9 @@
         this.currentData = null;
         this.isLoading = false;
 
-        // Initialize immediately after setting up config
         this.init();
       } catch (error) {
-        // Use a default error message if config is not available
-        const errorMessage = error.message || "Failed to initialize widget";
-        this.showError(errorMessage);
+        this.showError(error.message);
         return;
       }
     }
@@ -454,41 +451,20 @@
     }
 
     showLoading() {
-      if (!this.config) {
-        // Fallback loading display if config is not available
-        this.container.className = "rw-widget";
-        this.container.innerHTML = `<div class="rw-container"><div class="rw-loading">Loading...</div></div>`;
-        return;
-      }
-
-      this.container.className = "rw-widget";
-      this.container.innerHTML = `<div class="rw-container"><div class="rw-loading">${this.config.loadingText}</div></div>`;
+      this.container.className = "election-widget";
+      this.container.innerHTML = `<div class="container"><div class="loading">${this.config.loadingText}</div></div>`;
     }
 
     showError(message) {
-      if (!this.config) {
-        // Fallback error display if config is not available
-        this.container.className = "rw-widget";
-        this.container.innerHTML = `
-          <div class="rw-container">
-            <div class="rw-error">
-              Error: ${message}
-              <br><button onclick="location.reload()">Retry</button>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      this.container.className = "rw-widget";
+      this.container.className = "election-widget";
       this.container.innerHTML = `
-        <div class="rw-container">
-          <div class="rw-error">
-            ${this.config.errorPrefix}${message}
-            <br><button onclick="location.reload()">${this.config.retryText}</button>
-          </div>
-        </div>
-      `;
+                    <div class="container">
+                        <div class="error">
+                            ${this.config.errorPrefix}${message}
+                            <br><button onclick="location.reload()">${this.config.retryText}</button>
+                        </div>
+                    </div>
+                `;
     }
 
     async loadData(year) {
@@ -512,7 +488,7 @@
     render() {
       if (!this.currentData) return;
 
-      this.container.className = "rw-widget";
+      this.container.className = "election-widget";
       this.container.innerHTML = this.generateHTML();
     }
 
@@ -534,14 +510,14 @@
       });
 
       return `
-                    <div class="rw-container">
-                        <div class="rw-header">
-                            <h1 class="rw-title">${this.config.title}</h1>
-                            <div class="rw-year-tabs">
+                    <div class="container">
+                        <div class="header">
+                            <h1 class="title">${this.config.title}</h1>
+                            <div class="year-tabs">
                                 ${this.config.years
                                   .map(
                                     (year) => `
-                                    <button class="rw-year-tab ${year === this.currentYear ? "active" : ""}" 
+                                    <button class="year-tab ${year === this.currentYear ? "active" : ""}" 
                                             data-year="${year}" 
                                             ${this.isLoading ? "disabled" : ""}>${year}</button>
                                 `,
@@ -550,56 +526,56 @@
                             </div>
                         </div>
 
-                        <div class="rw-total-seats">${this.config.totalSeatsText}${data.totalSeats}</div>
+                        <div class="total-seats">${this.config.totalSeatsText}${data.totalSeats}</div>
 
-                        <div class="rw-main-results">
-                            <div class="rw-results-labels">
-                                    <div class="rw-party-result">
-                                        <div class="rw-party-result-name">${segments[0].name}</div>
-                                        <div class="rw-party-result-seats">${segments[0].seats}</div>
+                        <div class="main-results">
+                            <div class="results-labels">
+                                    <div class="party-result">
+                                        <div class="party-result-name">${segments[0].name}</div>
+                                        <div class="party-result-seats">${segments[0].seats}</div>
                                     </div>
                                 
-                                <div class="rw-party-result">
-                                    <div class="rw-party-result-name">${this.config.majorityText}</div>
-                                    <div class="rw-party-result-seats">${data.halfWayMark}</div>
+                                <div class="party-result">
+                                    <div class="party-result-name">${this.config.majorityText}</div>
+                                    <div class="party-result-seats">${data.halfWayMark}</div>
                                 </div>
-                                    <div class="rw-party-result">
-                                        <div class="rw-party-result-name">${segments[1].name}</div>
-                                        <div class="rw-party-result-seats">${segments[1].seats}</div>
+                                    <div class="party-result">
+                                        <div class="party-result-name">${segments[1].name}</div>
+                                        <div class="party-result-seats">${segments[1].seats}</div>
                                     </div>
                             </div>
 
-                            <div class="rw-progress-bar-container">
-                                <div class="rw-progress-bar">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar">
                                     ${segments
                                       .map(
                                         (segment, index) => `
-                                        <div class="rw-party-segment" 
+                                        <div class="party-segment" 
 					     style="width: ${segment.percentage}%; background-color: ${segment.color}; ${index === 1 ? "margin-left: auto;" : ""}">
                                         </div>
                                     `,
                                       )
                                       .join("")}
                                 </div>
-                                <div class="rw-majority-divider"></div>
+                                <div class="majority-divider"></div>
                             </div>
                         </div>
 
-                        <div class="rw-party-cards">
+                        <div class="party-cards">
                             ${data.displayParties
                               .map(
                                 (party) => `
-                                <div class="rw-party-card" data-party="${party.name}">
-                                    <div class="rw-party-icon" style="background-color: ${party.color}">
+                                <div class="party-card" data-party="${party.name}">
+                                    <div class="party-icon" style="background-color: ${party.color}">
                                         ${
                                           party.logo
                                             ? `<img src="${party.logo}" alt="${party.name}" onerror="this.style.display='none'; this.parentNode.textContent='${party.icon}';">`
                                             : party.icon
                                         }
                                     </div>
-                                    <div class="rw-party-info">
-                                        <div class="rw-party-name">${party.name}</div>
-                                        <div class="rw-party-seats">${party.seats}</div>
+                                    <div class="party-info">
+                                        <div class="party-name">${party.name}</div>
+                                        <div class="party-seats">${party.seats}</div>
                                     </div>
                                 </div>
                             `,
@@ -614,7 +590,7 @@
       if (!this.container) return;
 
       // Year tab switching
-      const yearTabs = this.container.querySelectorAll(".rw-year-tab");
+      const yearTabs = this.container.querySelectorAll(".year-tab");
       yearTabs.forEach((tab) => {
         tab.addEventListener("click", async (e) => {
           const year = e.target.dataset.year;
@@ -633,11 +609,11 @@
       });
 
       // Party card interactions
-      const partyCards = this.container.querySelectorAll(".rw-party-card");
+      const partyCards = this.container.querySelectorAll(".party-card");
       partyCards.forEach((card) => {
         card.addEventListener("click", () => {
-          const partyName = card.querySelector(".rw-party-name").textContent;
-          const partySeats = card.querySelector(".rw-party-seats").textContent;
+          const partyName = card.querySelector(".party-name").textContent;
+          const partySeats = card.querySelector(".party-seats").textContent;
           alert(`${partyName}: ${partySeats} ${this.config.seatsText}`);
         });
 
@@ -654,7 +630,7 @@
     animateProgressBars() {
       if (!this.container) return;
 
-      const segments = this.container.querySelectorAll(".rw-party-segment");
+      const segments = this.container.querySelectorAll(".party-segment");
 
       segments.forEach((segment) => {
         const finalWidth = segment.style.width;
@@ -699,29 +675,14 @@
 
   // Auto-initialize when DOM is ready
   function initWidget() {
-    const containers = document.querySelectorAll("[data-rw-api-endpoint]");
+    const containers = document.querySelectorAll("[data-api-endpoint]");
     containers.forEach((container) => {
       if (!container.dataset.initialized) {
         try {
-          // Ensure container has an ID
-          if (!container.id) {
-            container.id = `rw-widget-${Date.now()}`;
-          }
-          new ElectionWidget(container.id);
+          new ElectionWidget(container.id || `election-widget-${Date.now()}`);
           container.dataset.initialized = "true";
         } catch (error) {
           console.error("Failed to initialize election widget:", error);
-          // Show error in the container
-          container.innerHTML = `
-            <div class="rw-widget">
-              <div class="rw-container">
-                <div class="rw-error">
-                  Error: Failed to initialize widget
-                  <br><button onclick="location.reload()">Retry</button>
-                </div>
-              </div>
-            </div>
-          `;
         }
       }
     });
