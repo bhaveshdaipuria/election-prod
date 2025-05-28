@@ -16,7 +16,7 @@ function addStyles() {
                     background-color: #f5f5f5;
                 }
 
-                .election-widget {
+                .wlw-election-widget {
                     background: white;
                     border-radius: 12px;
                     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -24,24 +24,24 @@ function addStyles() {
                     overflow: hidden;
                 }
 
-                .header {
+                .wlw-widget-header {
                     padding: 20px;
                     border-bottom: 1px solid #e5e5e5;
                 }
 
-                .title {
+                .wlw-widget-title {
                     font-size: 18px;
                     font-weight: 600;
                     color: #333;
                     margin-bottom: 15px;
                 }
 
-                .year-tabs {
+                .wlw-year-tabs {
                     display: flex;
                     gap: 10px;
                 }
 
-                .year-tab {
+                .wlw-year-tab {
                     padding: 8px 16px;
                     border-radius: 20px;
                     border: 1px solid #ddd;
@@ -53,22 +53,22 @@ function addStyles() {
                     transition: all 0.2s ease;
                 }
 
-                .year-tab.active {
+                .wlw-year-tab.active {
                     background: #ff6b35;
                     color: white;
                     border-color: #ff6b35;
                 }
 
-                .year-tab:hover:not(.active) {
+                .wlw-year-tab:hover:not(.active) {
                     background: #f8f9fa;
                     border-color: #ccc;
                 }
 
-                .table-container {
+                .wlw-table-container {
                     background: #fdf6f3;
                 }
 
-                .table-header {
+                .wlw-table-header {
                     display: grid;
                     grid-template-columns: 2fr 1fr 1fr;
                     padding: 15px 20px;
@@ -79,12 +79,12 @@ function addStyles() {
                     border-bottom: 1px solid #e5d5c8;
                 }
 
-                .results-list {
+                .wlw-results-list {
                     max-height: 400px;
                     overflow-y: auto;
                 }
 
-                .party-row {
+                .wlw-party-row {
                     display: grid;
                     grid-template-columns: 2fr 1fr 1fr;
                     padding: 12px 20px;
@@ -93,17 +93,17 @@ function addStyles() {
                     transition: background-color 0.2s ease;
                 }
 
-                .party-row:hover {
+                .wlw-party-row:hover {
                     background: #f9f0eb;
                 }
 
-                .party-info {
+                .wlw-party-info {
                     display: flex;
                     align-items: center;
                     gap: 10px;
                 }
 
-                .party-logo {
+                .wlw-party-logo {
                     width: 24px;
                     height: 24px;
                     border-radius: 50%;
@@ -115,46 +115,46 @@ function addStyles() {
                     font-size: 10px;
                 }
 
-                .party-name {
+                .wlw-party-name {
                     font-weight: 500;
                     color: #333;
                     font-size: 14px;
                 }
 
-                .seats-won, .position {
+                .wlw-seats-won, .wlw-position {
                     font-weight: 600;
                     color: #333;
                     text-align: center;
                     font-size: 14px;
                 }
 
-                .loading {
+                .wlw-loading {
                     padding: 40px;
                     text-align: center;
                     color: #666;
                 }
 
-                .no-data {
+                .wlw-no-data {
                     padding: 40px;
                     text-align: center;
                     color: #666;
                     font-style: italic;
                 }
 
-                .results-list::-webkit-scrollbar {
+                .wlw-results-list::-webkit-scrollbar {
                     width: 6px;
                 }
 
-                .results-list::-webkit-scrollbar-track {
+                .wlw-results-list::-webkit-scrollbar-track {
                     background: #f1f1f1;
                 }
 
-                .results-list::-webkit-scrollbar-thumb {
+                .wlw-results-list::-webkit-scrollbar-thumb {
                     background: #ccc;
                     border-radius: 3px;
                 }
 
-                .results-list::-webkit-scrollbar-thumb:hover {
+                .wlw-results-list::-webkit-scrollbar-thumb:hover {
                     background: #bbb;
                 }
             `;
@@ -167,29 +167,29 @@ function createWidget() {
 
   // Create main widget div
   const widget = document.createElement("div");
-  widget.className = "election-widget";
+  widget.className = "wlw-election-widget";
 
   // Create header
   const header = document.createElement("div");
-  header.className = "header";
+  header.className = "wlw-widget-header";
 
   const title = document.createElement("h2");
-  title.className = "title";
+  title.className = "wlw-widget-title";
   title.textContent = "जीत हार";
 
   const yearTabs = document.createElement("div");
-  yearTabs.className = "year-tabs";
-  yearTabs.id = "yearTabs";
+  yearTabs.className = "wlw-year-tabs";
+  yearTabs.id = "wlw-yearTabs";
 
   header.appendChild(title);
   header.appendChild(yearTabs);
 
   // Create table container
   const tableContainer = document.createElement("div");
-  tableContainer.className = "table-container";
+  tableContainer.className = "wlw-table-container";
 
   const tableHeader = document.createElement("div");
-  tableHeader.className = "table-header";
+  tableHeader.className = "wlw-table-header";
 
   const partyHeader = document.createElement("div");
   partyHeader.textContent = "पार्टी";
@@ -207,11 +207,11 @@ function createWidget() {
   tableHeader.appendChild(seatsHeader);
 
   const resultsList = document.createElement("div");
-  resultsList.className = "results-list";
-  resultsList.id = "resultsList";
+  resultsList.className = "wlw-results-list";
+  resultsList.id = "wlw-resultsList";
 
   const loading = document.createElement("div");
-  loading.className = "loading";
+  loading.className = "wlw-loading";
   loading.textContent = "Loading...";
   resultsList.appendChild(loading);
 
@@ -233,7 +233,7 @@ function getPartyInitials(partyName) {
 }
 
 function createYearTabs() {
-  const yearTabs = document.getElementById("yearTabs");
+  const yearTabs = document.getElementById("wlw-yearTabs");
   const years = [...new Set(currentData.map((item) => item.year))].sort(
     (a, b) => b - a
   );
@@ -242,7 +242,7 @@ function createYearTabs() {
 
   years.forEach((year) => {
     const tab = document.createElement("div");
-    tab.className = `year-tab ${year === currentYear ? "active" : ""}`;
+    tab.className = `wlw-year-tab ${year === currentYear ? "active" : ""}`;
     tab.textContent = year;
     tab.addEventListener("click", () => {
       currentYear = year;
@@ -254,7 +254,7 @@ function createYearTabs() {
 }
 
 function updateActiveTab() {
-  document.querySelectorAll(".year-tab").forEach((tab) => {
+  document.querySelectorAll(".wlw-year-tab").forEach((tab) => {
     tab.classList.remove("active");
     if (parseInt(tab.textContent) === currentYear) {
       tab.classList.add("active");
@@ -263,13 +263,13 @@ function updateActiveTab() {
 }
 
 function displayResults(year) {
-  const resultsList = document.getElementById("resultsList");
+  const resultsList = document.getElementById("wlw-resultsList");
   const yearData = currentData.find((item) => item.year === year);
 
   if (!yearData) {
     resultsList.innerHTML = "";
     const noData = document.createElement("div");
-    noData.className = "no-data";
+    noData.className = "wlw-no-data";
     noData.textContent = "No data available for this year";
     resultsList.appendChild(noData);
     return;
@@ -284,14 +284,14 @@ function displayResults(year) {
 
   sortedParties.forEach((partyData, index) => {
     const row = document.createElement("div");
-    row.className = "party-row";
+    row.className = "wlw-party-row";
 
     // Party info column
     const partyInfo = document.createElement("div");
-    partyInfo.className = "party-info";
+    partyInfo.className = "wlw-party-info";
 
     const logo = document.createElement("div");
-    logo.className = "party-logo";
+    logo.className = "wlw-party-logo";
     //   logo.style.backgroundColor = partyData.party.color_code || "#666";
 
     if (partyData.party.party_logo) {
@@ -308,7 +308,7 @@ function displayResults(year) {
     logo.textContent = getPartyInitials(partyData.party.party);
 
     const partyName = document.createElement("div");
-    partyName.className = "party-name";
+    partyName.className = "wlw-party-name";
     partyName.textContent = partyData.party.party;
 
     partyInfo.appendChild(logo);
@@ -316,13 +316,13 @@ function displayResults(year) {
 
     // Position column
     const position = document.createElement("div");
-    position.className = "position";
+    position.className = "wlw-position";
     position.textContent =
       yearData.status === "completed" ? "0" : partyData.seatsWon;
 
     // Seats won column
     const seatsWon = document.createElement("div");
-    seatsWon.className = "seats-won";
+    seatsWon.className = "wlw-seats-won";
     seatsWon.textContent =
       yearData.status !== "completed" ? "0" : partyData.seatsWon;
 
