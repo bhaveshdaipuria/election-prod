@@ -31,13 +31,13 @@
       padding: 0.5rem;
       border: 1px solid #e2e8f0;
       border-radius: 4px;
-      font-size: 0.875rem;
+      font-size: 15px;
       background-color: white;
     }
     .cnew-widget .cnew-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.875rem;
+      font-size: 15px;
     }
     .cnew-widget .cnew-table th {
       padding: 0.75rem;
@@ -75,18 +75,18 @@
     .cnew-widget .cnew-cand-name {
       font-weight: 500;
       color: #1f2937;
-      font-size: 0.875rem;
+      font-size: 15px;
     }
     .cnew-widget .cnew-meta {
       color: #6b7280;
-      font-size: 0.75rem;
+      font-size: 12px;
     }
     .cnew-widget .cnew-party-badge {
       display: inline-flex;
       align-items: center;
       padding: 0.25rem 0.5rem;
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 12px;
       font-weight: 500;
       color: white;
       white-space: nowrap;
@@ -124,7 +124,7 @@
       .cnew-widget .cnew-table td,
       .cnew-widget .cnew-table th { padding: 0.5rem; }
       .cnew-widget .cnew-avatar { width: 1.5rem; height: 1.5rem; }
-      .cnew-widget .cnew-party-badge { padding: 0.125rem 0.375rem; font-size: 0.6875rem; }
+      .cnew-widget .cnew-party-badge { padding: 0.125rem 0.375rem; font-size: 15px; }
     }
     .cnew-widget .cnew-gray { color: gray; }
   `;
