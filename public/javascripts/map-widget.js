@@ -144,7 +144,7 @@ class MapWidget {
 
     container.innerHTML = `
             <div id="popover" class="popover"></div>
-            <h5 class="main_title text-[16px] md:text-[35px] text-center font-bold"></h5>
+            <h5 class="main_title text-center font-bold"></h5>
 
             <div id="content">
                 <!-- live results start -->
@@ -157,7 +157,7 @@ class MapWidget {
             <div class="svg_container pb-12 flex flex-col items-center justify-center" id="svg_container" style="width: 100%">
                 <div class="const-map bihar">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:g="http://base.google.com/ns/1.0"
-                        style="" stroke-linejoin="round" stroke-linecap="round"
+                        style="width: 100%; height: 100%;" stroke-linejoin="round" stroke-linecap="round"
                         viewBox="0 0 800 630" height="400" width="500" baseProfile="tiny" version="1.2">
                         <g id="br">
                             <path data-id="cns-1" stroke="#ff0000"
