@@ -55,7 +55,7 @@ function addStyles() {
 
                 .wlw-year-tab.active {
                     background: #ff6b35;
-                    color: white;
+                    color: white !important;
                     border-color: #ff6b35;
                 }
 

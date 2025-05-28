@@ -99,7 +99,7 @@
 
             .erw-widget .erw-year-tab.active {
                 background-color: #ff8c42;
-                color: white;
+                color: white !important;
             }
 
             .erw-widget .erw-year-tab:not(.active) {
