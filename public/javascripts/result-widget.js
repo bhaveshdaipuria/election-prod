@@ -3,12 +3,12 @@
 
   // Default configuration
   const DEFAULT_CONFIG = {
-    containerId: "election-results-widget",
-    title: "चुनाव परिणाम",
-    apiEndpoint: null,
-    state: null,
-    years: [],
-    defaultYear: null,
+    containerId: "erw-container",
+    title: "बिहार चुनाव परिणाम",
+    apiEndpoint: "https://election.prabhatkhabar.com/elections/state-elections",
+    state: "Bihar",
+    years: ["2010", "2015", "2020"],
+    defaultYear: "2020",
     loadingText: "डेटा लोड हो रहा है...",
     errorPrefix: "त्रुटि: ",
     retryText: "पुनः प्रयास करें",
@@ -20,18 +20,18 @@
 
   // CSS Styles - Your original design
   const CSS_STYLES = `
-            .election-widget * {
+            .erw-widget * {
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
             }
 
-            .election-widget {
+            .erw-widget {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
                 background-color: #f5f3f0;
             }
 
-            .election-widget .loading {
+            .erw-widget .erw-loading {
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -40,7 +40,7 @@
                 color: #4a5568;
             }
 
-            .election-widget .error {
+            .erw-widget .erw-error {
                 background-color: #fed7d7;
                 color: #c53030;
                 padding: 20px;
@@ -49,7 +49,7 @@
                 text-align: center;
             }
 
-            .election-widget .error button {
+            .erw-widget .erw-error button {
                 margin-top: 10px;
                 padding: 8px 16px;
                 background-color: #c53030;
@@ -59,7 +59,7 @@
                 cursor: pointer;
             }
 
-            .election-widget .container {
+            .erw-widget .erw-container {
                 margin: 0 auto;
                 padding: 15px;
                 background: white;
@@ -67,25 +67,25 @@
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             }
 
-            .election-widget .header {
+            .erw-widget .erw-header {
                 display: flex;
                 align-items: center;
                 gap: 20px;
                 margin-bottom: 10px;
             }
 
-            .election-widget .title {
+            .erw-widget .erw-title {
                 font-size: 32px;
                 font-weight: 600;
                 color: #2d3748;
             }
 
-            .election-widget .year-tabs {
+            .erw-widget .erw-year-tabs {
                 display: flex;
                 gap: 10px;
             }
 
-            .election-widget .year-tab {
+            .erw-widget .erw-year-tab {
                 padding: 8px 16px;
                 border-radius: 20px;
                 font-size: 16px;
@@ -96,37 +96,37 @@
                 background: none;
             }
 
-            .election-widget .year-tab.active {
+            .erw-widget .erw-year-tab.active {
                 background-color: #ff8c42;
                 color: white;
             }
 
-            .election-widget .year-tab:not(.active) {
+            .erw-widget .erw-year-tab:not(.active) {
                 background-color: transparent;
                 color: #718096;
             }
 
-            .election-widget .year-tab:hover:not(.active) {
+            .erw-widget .erw-year-tab:hover:not(.active) {
                 background-color: #e2e8f0;
             }
 
-            .election-widget .year-tab:disabled {
+            .erw-widget .erw-year-tab:disabled {
                 opacity: 0.5;
                 cursor: not-allowed;
             }
 
-            .election-widget .total-seats {
+            .erw-widget .erw-total-seats {
                 margin-bottom: 10px;
                 font-size: 18px;
                 color: #4a5568;
             }
 
-            .election-widget .main-results {
+            .erw-widget .erw-main-results {
                 margin-bottom: 40px;
                 position: relative;
             }
 
-            .election-widget .results-labels {
+            .erw-widget .erw-results-labels {
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
@@ -134,30 +134,30 @@
                 padding: 0 20px;
             }
 
-            .election-widget .party-result {
+            .erw-widget .erw-party-result {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 gap: 5px;
             }
 
-            .election-widget .party-result-name {
+            .erw-widget .erw-party-result-name {
                 font-size: 18px;
                 font-weight: 600;
                 color: #2d3748;
             }
 
-            .election-widget .party-result-seats {
+            .erw-widget .erw-party-result-seats {
                 font-size: 28px;
                 font-weight: 700;
                 color: #2d3748;
             }
 
-            .election-widget .progress-bar-container {
+            .erw-widget .erw-progress-bar-container {
                 position: relative;
             }
 
-            .election-widget .progress-bar {
+            .erw-widget .erw-progress-bar {
                 height: 16px;
                 background-color: #e2e8f0;
                 border-radius: 8px;
@@ -167,20 +167,20 @@
                 display: flex;
             }
 
-            .election-widget .party-segment {
+            .erw-widget .erw-party-segment {
                 transition: width 0.8s ease;
                 height: 100%;
             }
 
-            .election-widget .party-segment:first-child {
+            .erw-widget .erw-party-segment:first-child {
                 border-radius: 8px 0 0 8px;
             }
 
-            .election-widget .party-segment:last-child {
+            .erw-widget .erw-party-segment:last-child {
                 border-radius: 0 8px 8px 0;
             }
 
-            .election-widget .majority-divider {
+            .erw-widget .erw-majority-divider {
                 position: absolute;
                 top: -8px;
                 height: 32px;
@@ -190,14 +190,14 @@
                 transform: translateX(-50%);
             }
 
-            .election-widget .party-cards {
+            .erw-widget .erw-party-cards {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 20px;
                 margin-top: 30px;
             }
 
-            .election-widget .party-card {
+            .erw-widget .erw-party-card {
                 background: white;
                 border: 2px solid #e2e8f0;
                 border-radius: 16px;
@@ -209,13 +209,13 @@
                 cursor: pointer;
             }
 
-            .election-widget .party-card:hover {
+            .erw-widget .erw-party-card:hover {
                 border-color: #cbd5e0;
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             }
 
-            .election-widget .party-icon {
+            .erw-widget .erw-party-icon {
                 width: 38px;
                 height: 38px;
                 border-radius: 50%;
@@ -230,52 +230,52 @@
                 overflow: hidden;
             }
 
-            .election-widget .party-icon img {
+            .erw-widget .erw-party-icon img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
                 border-radius: 50%;
             }
 
-            .election-widget .party-info {
+            .erw-widget .erw-party-info {
                 flex-grow: 1;
             }
 
-            .election-widget .party-name {
+            .erw-widget .erw-party-name {
                 font-size: 16px;
                 font-weight: 600;
                 color: #2d3748;
                 margin-bottom: 4px;
             }
 
-            .election-widget .party-seats {
+            .erw-widget .erw-party-seats {
                 font-size: 24px;
                 font-weight: 700;
                 color: #1a202c;
             }
 
             @media (max-width: 768px) {
-                .election-widget .container {
+                .erw-widget .erw-container {
                     padding: 20px;
                 }
 
-                .election-widget .title {
+                .erw-widget .erw-title {
                     font-size: 24px;
                 }
 
-                .election-widget .header {
+                .erw-widget .erw-header {
                     flex-direction: column;
                     gap: 15px;
                     text-align: center;
                 }
 
-                .election-widget .results-labels {
+                .erw-widget .erw-results-labels {
                     flex-direction: column;
                     gap: 15px;
                     text-align: center;
                 }
 
-                .election-widget .party-cards {
+                .erw-widget .erw-party-cards {
                     grid-template-columns: 1fr;
                 }
             }
@@ -286,36 +286,8 @@
 
   // Utility functions
   function getConfig(container) {
-    const config = { ...DEFAULT_CONFIG };
-
-    if (container.dataset.apiEndpoint)
-      config.apiEndpoint = container.dataset.apiEndpoint;
-    if (container.dataset.state) config.state = container.dataset.state;
-    if (container.dataset.years)
-      config.years = container.dataset.years.split(",").map((y) => y.trim());
-    if (container.dataset.title) config.title = container.dataset.title;
-    if (container.dataset.loadingText)
-      config.loadingText = container.dataset.loadingText;
-
-    // Set default year to first available year
-    if (!config.defaultYear && config.years.length > 0) {
-      config.defaultYear = config.years[0];
-    }
-
-    // Validate required config
-    if (!config.apiEndpoint) {
-      throw new Error(
-        "API endpoint is required. Set data-api-endpoint attribute.",
-      );
-    }
-    if (!config.state) {
-      throw new Error("State is required. Set data-state attribute.");
-    }
-    if (config.years.length === 0) {
-      throw new Error("Years are required. Set data-years attribute.");
-    }
-
-    return config;
+    // Return hardcoded config instead of reading from data attributes
+    return DEFAULT_CONFIG;
   }
 
   function processElectionData(data, config) {
@@ -451,20 +423,20 @@
     }
 
     showLoading() {
-      this.container.className = "election-widget";
-      this.container.innerHTML = `<div class="container"><div class="loading">${this.config.loadingText}</div></div>`;
+      this.container.className = "erw-widget";
+      this.container.innerHTML = `<div class="erw-container"><div class="erw-loading">${this.config.loadingText}</div></div>`;
     }
 
     showError(message) {
-      this.container.className = "election-widget";
+      this.container.className = "erw-widget";
       this.container.innerHTML = `
-                    <div class="container">
-                        <div class="error">
-                            ${this.config.errorPrefix}${message}
-                            <br><button onclick="location.reload()">${this.config.retryText}</button>
-                        </div>
-                    </div>
-                `;
+        <div class="erw-container">
+          <div class="erw-error">
+            ${this.config.errorPrefix}${message}
+            <br><button onclick="location.reload()">${this.config.retryText}</button>
+          </div>
+        </div>
+      `;
     }
 
     async loadData(year) {
@@ -488,7 +460,7 @@
     render() {
       if (!this.currentData) return;
 
-      this.container.className = "election-widget";
+      this.container.className = "erw-widget";
       this.container.innerHTML = this.generateHTML();
     }
 
@@ -510,87 +482,88 @@
       });
 
       return `
-                    <div class="container">
-                        <div class="header">
-                            <h1 class="title">${this.config.title}</h1>
-                            <div class="year-tabs">
-                                ${this.config.years
-                                  .map(
-                                    (year) => `
-                                    <button class="year-tab ${year === this.currentYear ? "active" : ""}" 
-                                            data-year="${year}" 
-                                            ${this.isLoading ? "disabled" : ""}>${year}</button>
-                                `,
-                                  )
-                                  .join("")}
-                            </div>
-                        </div>
+        <div class="erw-container">
+          <div class="erw-header">
+            <h1 class="erw-title">${this.config.title}</h1>
+            <div class="erw-year-tabs">
+              ${this.config.years
+                .map(
+                  (year) => `
+                  <button class="erw-year-tab ${year === this.currentYear ? "active" : ""}" 
+                          data-year="${year}" 
+                          ${this.isLoading ? "disabled" : ""}>${year}</button>
+              `,
+                )
+                .join("")}
+            </div>
+          </div>
 
-                        <div class="total-seats">${this.config.totalSeatsText}${data.totalSeats}</div>
+          <div class="erw-total-seats">${this.config.totalSeatsText}${data.totalSeats}</div>
 
-                        <div class="main-results">
-                            <div class="results-labels">
-                                    <div class="party-result">
-                                        <div class="party-result-name">${segments[0].name}</div>
-                                        <div class="party-result-seats">${segments[0].seats}</div>
-                                    </div>
-                                
-                                <div class="party-result">
-                                    <div class="party-result-name">${this.config.majorityText}</div>
-                                    <div class="party-result-seats">${data.halfWayMark}</div>
-                                </div>
-                                    <div class="party-result">
-                                        <div class="party-result-name">${segments[1].name}</div>
-                                        <div class="party-result-seats">${segments[1].seats}</div>
-                                    </div>
-                            </div>
+          <div class="erw-main-results">
+            <div class="erw-results-labels">
+              <div class="erw-party-result">
+                <div class="erw-party-result-name">${segments[0].name}</div>
+                <div class="erw-party-result-seats">${segments[0].seats}</div>
+              </div>
+              
+              <div class="erw-party-result">
+                <div class="erw-party-result-name">${this.config.majorityText}</div>
+                <div class="erw-party-result-seats">${data.halfWayMark}</div>
+              </div>
+              
+              <div class="erw-party-result">
+                <div class="erw-party-result-name">${segments[1].name}</div>
+                <div class="erw-party-result-seats">${segments[1].seats}</div>
+              </div>
+            </div>
 
-                            <div class="progress-bar-container">
-                                <div class="progress-bar">
-                                    ${segments
-                                      .map(
-                                        (segment, index) => `
-                                        <div class="party-segment" 
-					     style="width: ${segment.percentage}%; background-color: ${segment.color}; ${index === 1 ? "margin-left: auto;" : ""}">
-                                        </div>
-                                    `,
-                                      )
-                                      .join("")}
-                                </div>
-                                <div class="majority-divider"></div>
-                            </div>
-                        </div>
-
-                        <div class="party-cards">
-                            ${data.displayParties
-                              .map(
-                                (party) => `
-                                <div class="party-card" data-party="${party.name}">
-                                    <div class="party-icon" style="background-color: ${party.color}">
-                                        ${
-                                          party.logo
-                                            ? `<img src="${party.logo}" alt="${party.name}" onerror="this.style.display='none'; this.parentNode.textContent='${party.icon}';">`
-                                            : party.icon
-                                        }
-                                    </div>
-                                    <div class="party-info">
-                                        <div class="party-name">${party.name}</div>
-                                        <div class="party-seats">${party.seats}</div>
-                                    </div>
-                                </div>
-                            `,
-                              )
-                              .join("")}
-                        </div>
+            <div class="erw-progress-bar-container">
+              <div class="erw-progress-bar">
+                ${segments
+                  .map(
+                    (segment, index) => `
+                    <div class="erw-party-segment" 
+                         style="width: ${segment.percentage}%; background-color: ${segment.color}; ${index === 1 ? "margin-left: auto;" : ""}">
                     </div>
-                `;
+                `,
+                  )
+                  .join("")}
+              </div>
+              <div class="erw-majority-divider"></div>
+            </div>
+          </div>
+
+          <div class="erw-party-cards">
+            ${data.displayParties
+              .map(
+                (party) => `
+                <div class="erw-party-card" data-party="${party.name}">
+                  <div class="erw-party-icon" style="background-color: ${party.color}">
+                    ${
+                      party.logo
+                        ? `<img src="${party.logo}" alt="${party.name}" onerror="this.style.display='none'; this.parentNode.textContent='${party.icon}';">`
+                        : party.icon
+                    }
+                  </div>
+                  <div class="erw-party-info">
+                    <div class="erw-party-name">${party.name}</div>
+                    <div class="erw-party-seats">${party.seats}</div>
+                  </div>
+                </div>
+            `,
+              )
+              .join("")}
+          </div>
+        </div>
+      `;
     }
 
     bindEvents() {
       if (!this.container) return;
 
       // Year tab switching
-      const yearTabs = this.container.querySelectorAll(".year-tab");
+      const yearTabs = this.container.querySelectorAll(".erw-year-tab");
       yearTabs.forEach((tab) => {
         tab.addEventListener("click", async (e) => {
           const year = e.target.dataset.year;
@@ -609,11 +582,11 @@
       });
 
       // Party card interactions
-      const partyCards = this.container.querySelectorAll(".party-card");
+      const partyCards = this.container.querySelectorAll(".erw-party-card");
       partyCards.forEach((card) => {
         card.addEventListener("click", () => {
-          const partyName = card.querySelector(".party-name").textContent;
-          const partySeats = card.querySelector(".party-seats").textContent;
+          const partyName = card.querySelector(".erw-party-name").textContent;
+          const partySeats = card.querySelector(".erw-party-seats").textContent;
           alert(`${partyName}: ${partySeats} ${this.config.seatsText}`);
         });
 
@@ -630,7 +603,7 @@
     animateProgressBars() {
       if (!this.container) return;
 
-      const segments = this.container.querySelectorAll(".party-segment");
+      const segments = this.container.querySelectorAll(".erw-party-segment");
 
       segments.forEach((segment) => {
         const finalWidth = segment.style.width;
@@ -675,17 +648,15 @@
 
   // Auto-initialize when DOM is ready
   function initWidget() {
-    const containers = document.querySelectorAll("[data-api-endpoint]");
-    containers.forEach((container) => {
-      if (!container.dataset.initialized) {
-        try {
-          new ElectionWidget(container.id || `election-widget-${Date.now()}`);
-          container.dataset.initialized = "true";
-        } catch (error) {
-          console.error("Failed to initialize election widget:", error);
-        }
+    const container = document.getElementById("erw-container");
+    if (container && !container.dataset.initialized) {
+      try {
+        new ElectionWidget("erw-container");
+        container.dataset.initialized = "true";
+      } catch (error) {
+        console.error("Failed to initialize election widget:", error);
       }
-    });
+    }
   }
 
   // Initialize when DOM is ready
