@@ -23,12 +23,9 @@
 
         .election-widget {
             background-color: #f0f2f5;
-            padding: 20px;
-            min-height: 100vh;
         }
 
         .election-widget .container {
-            max-width: 1200px;
             margin: 0 auto;
             background-color: #fff;
             border-radius: 12px;
@@ -58,6 +55,15 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        .election-widget .election-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .election-widget .election-tabs::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
         .election-widget .tab {
             padding: 15px 25px;
             font-size: 16px;
@@ -74,6 +80,11 @@
             font-weight: 600;
         }
 
+        .election-widget .tab:hover:not(.active) {
+            background-color: #f8f9fa;
+            border-bottom: 3px solid #ddd;
+        }
+
         .election-widget .election-content {
             display: flex;
             padding: 30px;
@@ -88,6 +99,36 @@
             align-items: center;
             position: relative;
             min-width: 320px;
+        }
+
+        .election-widget .summary-bar {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            gap: 20px;
+            width: 100%;
+        }
+
+        .election-widget .progress-bar {
+            height: 4px;
+            width: 100%;
+            background-color: #eee;
+            position: relative;
+            margin-top: 10px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .election-widget .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6a00, #ff9d00);
+            width: 0%;
+            transition: width 0.5s ease;
         }
 
         .election-widget .donut-chart {
@@ -132,6 +173,16 @@
             margin-top: 10px;
             border-radius: 8px;
             background-color: #fafafa;
+            scrollbar-width: thin;
+        }
+
+        .election-widget .legend::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .election-widget .legend::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
         }
 
         .election-widget .legend-item {
@@ -143,6 +194,11 @@
             background-color: white;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s;
+        }
+
+        .election-widget .legend-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         }
 
         .election-widget .results-table-container {
@@ -158,6 +214,16 @@
             flex: 1;
             overflow: auto;
             max-height: 500px;
+            scrollbar-width: thin;
+        }
+
+        .election-widget .results-table::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .election-widget .results-table::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
         }
 
         .election-widget table {
@@ -185,6 +251,10 @@
             background-color: #f8f9fa;
         }
 
+        .election-widget tr:hover {
+            background-color: #f0f2f5;
+        }
+
         .election-widget .party-cell {
             display: flex;
             align-items: center;
@@ -196,6 +266,21 @@
             height: 10px;
             border-radius: 50%;
             display: inline-block;
+        }
+
+        .election-widget .seats-won {
+            font-weight: 600;
+        }
+
+        .election-widget .refresh-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
         }
 
         .election-widget .loading {
@@ -241,16 +326,57 @@
         }
 
         @media (max-width: 768px) {
+            .election-widget .election-content {
+                padding: 15px;
+            }
+
             .election-widget .donut-chart {
                 width: 280px;
                 height: 280px;
             }
+
             .election-widget .center-text {
                 width: 140px;
                 height: 140px;
             }
+
             .election-widget .center-text h2 {
                 font-size: 36px;
+            }
+
+            .election-widget .header h1 {
+                font-size: 24px;
+            }
+
+            .election-widget th,
+            .election-widget td {
+                padding: 12px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .election-widget .donut-chart {
+                width: 240px;
+                height: 240px;
+            }
+
+            .election-widget .center-text {
+                width: 120px;
+                height: 120px;
+            }
+
+            .election-widget .center-text h2 {
+                font-size: 32px;
+            }
+
+            .election-widget .tab {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            .election-widget .legend-item {
+                padding: 4px 8px;
+                font-size: 14px;
             }
         }
     `;
@@ -298,6 +424,15 @@
                     <div class="election-tabs"></div>
                     <div class="election-content">
                         <div class="chart-container">
+                            <div class="summary-bar">
+                                <div>
+                                    <span id="electionYear"></span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="progressFill"></div>
+                                    </div>
+                                </div>
+                                <div id="seatCounter"></div>
+                            </div>
                             <div class="donut-chart" id="donutChart"></div>
                             <div class="center-text">
                                 <h2></h2>
@@ -334,13 +469,40 @@
             this.showLoading(true);
 
             try {
-                const response = await fetch(`${this.config.baseUrl}${this.config.apiEndpoint}?state=${this.config.state}`);
-                if (!response.ok) throw new Error('Network response was not ok');
+                const apiUrl = `${this.config.baseUrl}${this.config.apiEndpoint}?state=${this.config.state}`;
+                console.log('Fetching election data from:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    mode: 'cors'
+                });
+
+                console.log('API Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.status}`);
+                }
                 
                 const data = await response.json();
+                console.log('Received election data:', data);
                 this.processElectionData(data);
             } catch (error) {
                 console.error('Error fetching election data:', error);
+                // Show error in the widget
+                const tbody = this.container.querySelector('tbody');
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="2" style="text-align: center; color: #dc3545;">
+                                Error loading election data. Please try again later.
+                            </td>
+                        </tr>
+                    `;
+                }
             } finally {
                 this.showLoading(false);
                 this.updateLastUpdatedTime();
@@ -422,6 +584,15 @@
         renderElectionData(key) {
             const data = this.currentElectionData[key];
             if (!data) return;
+
+            // Update election year and progress info
+            const yearText = key.split(' ')[1];
+            document.getElementById('electionYear').textContent = `${key} (${data.declaredSeats}/${data.totalSeats} सीटें)`;
+            document.getElementById('seatCounter').textContent = `बहुमत: ${data.majorityMark} सीटें`;
+
+            // Update progress bar
+            const progressPercentage = (data.declaredSeats / data.totalSeats) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercentage}%`;
 
             // Update center text
             this.container.querySelector('.center-text h2').textContent = data.majorityMark;
@@ -601,9 +772,17 @@
 
     // Auto-initialize when DOM is ready
     function initWidget() {
+        console.log('Initializing election widget...');
+        
+        // First try to find containers with data-election-widget attribute
         const containers = document.querySelectorAll('[data-election-widget]');
-        containers.forEach(container => {
-            if (!container.dataset.initialized) {
+        console.log('Found containers with data-election-widget:', containers.length);
+        
+        if (containers.length === 0) {
+            // If no containers found with data attribute, try to find by ID
+            const container = document.getElementById('election-widget');
+            if (container) {
+                console.log('Found container by ID:', container.id);
                 try {
                     new ElectionWidget({
                         containerId: container.id,
@@ -615,20 +794,58 @@
                 } catch (error) {
                     console.error('Failed to initialize election widget:', error);
                 }
+            } else {
+                console.error('No election widget container found!');
             }
-        });
+        } else {
+            containers.forEach(container => {
+                if (!container.dataset.initialized) {
+                    console.log('Initializing container:', container.id);
+                    try {
+                        new ElectionWidget({
+                            containerId: container.id,
+                            state: container.dataset.state || 'Bihar',
+                            apiEndpoint: container.dataset.apiEndpoint || '/elections/state-elections',
+                            baseUrl: 'https://election.prabhatkhabar.com'
+                        });
+                        container.dataset.initialized = 'true';
+                    } catch (error) {
+                        console.error('Failed to initialize election widget:', error);
+                    }
+                }
+            });
+        }
     }
 
     // Initialize when DOM is ready
     if (document.readyState === 'loading') {
+        console.log('Document still loading, waiting for DOMContentLoaded...');
         document.addEventListener('DOMContentLoaded', initWidget);
     } else {
+        console.log('Document already loaded, initializing immediately...');
         initWidget();
     }
+
+    // Also try to initialize after a short delay to ensure everything is loaded
+    setTimeout(initWidget, 1000);
 
     // Export for manual use
     window.ElectionWidget = ElectionWidget;
     window.initElectionWidget = function(containerId, config = {}) {
-        return new ElectionWidget({ containerId, ...config });
+        console.log('Manually initializing election widget for container:', containerId);
+        return new ElectionWidget({ 
+            containerId, 
+            ...config,
+            baseUrl: 'https://election.prabhatkhabar.com'
+        });
+    };
+
+    // Add a global function to force refresh
+    window.refreshElectionWidget = function(containerId) {
+        console.log('Forcing refresh of election widget:', containerId);
+        const widget = window.ElectionWidget.instances?.[containerId];
+        if (widget) {
+            widget.fetchElectionData();
+        }
     };
 })(); 
