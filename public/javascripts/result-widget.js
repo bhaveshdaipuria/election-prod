@@ -420,9 +420,12 @@
         this.currentData = null;
         this.isLoading = false;
 
+        // Initialize immediately after setting up config
         this.init();
       } catch (error) {
-        this.showError(error.message);
+        // Use a default error message if config is not available
+        const errorMessage = error.message || "Failed to initialize widget";
+        this.showError(errorMessage);
         return;
       }
     }
@@ -451,20 +454,41 @@
     }
 
     showLoading() {
+      if (!this.config) {
+        // Fallback loading display if config is not available
+        this.container.className = "rw-widget";
+        this.container.innerHTML = `<div class="rw-container"><div class="rw-loading">Loading...</div></div>`;
+        return;
+      }
+
       this.container.className = "rw-widget";
       this.container.innerHTML = `<div class="rw-container"><div class="rw-loading">${this.config.loadingText}</div></div>`;
     }
 
     showError(message) {
+      if (!this.config) {
+        // Fallback error display if config is not available
+        this.container.className = "rw-widget";
+        this.container.innerHTML = `
+          <div class="rw-container">
+            <div class="rw-error">
+              Error: ${message}
+              <br><button onclick="location.reload()">Retry</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
       this.container.className = "rw-widget";
       this.container.innerHTML = `
-                    <div class="rw-container">
-                        <div class="rw-error">
-                            ${this.config.errorPrefix}${message}
-                            <br><button onclick="location.reload()">${this.config.retryText}</button>
-                        </div>
-                    </div>
-                `;
+        <div class="rw-container">
+          <div class="rw-error">
+            ${this.config.errorPrefix}${message}
+            <br><button onclick="location.reload()">${this.config.retryText}</button>
+          </div>
+        </div>
+      `;
     }
 
     async loadData(year) {
@@ -679,10 +703,25 @@
     containers.forEach((container) => {
       if (!container.dataset.initialized) {
         try {
-          new ElectionWidget(container.id || `rw-widget-${Date.now()}`);
+          // Ensure container has an ID
+          if (!container.id) {
+            container.id = `rw-widget-${Date.now()}`;
+          }
+          new ElectionWidget(container.id);
           container.dataset.initialized = "true";
         } catch (error) {
           console.error("Failed to initialize election widget:", error);
+          // Show error in the container
+          container.innerHTML = `
+            <div class="rw-widget">
+              <div class="rw-container">
+                <div class="rw-error">
+                  Error: Failed to initialize widget
+                  <br><button onclick="location.reload()">Retry</button>
+                </div>
+              </div>
+            </div>
+          `;
         }
       }
     });
