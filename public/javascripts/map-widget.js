@@ -98,7 +98,7 @@ class MapWidget {
       .election_map_year_tab.active {
         background-color: #ff6b35;
         border-color: #ff6b35;
-        color: #fff;
+        color: #fff !important;
         font-weight: 600;
         box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
       }
@@ -106,7 +106,6 @@ class MapWidget {
       .election_map_year_tab.active:hover {
         background-color: #e55a2b;
         border-color: #e55a2b;
-		color: #fff !important;
         transform: translateY(-1px);
         box-shadow: 0 3px 8px rgba(229, 90, 43, 0.4);
       }
