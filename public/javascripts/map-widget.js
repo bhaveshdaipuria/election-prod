@@ -11,9 +11,7 @@ class MapWidget {
 
     async loadDependencies() {
         // Base URL for resources
-        const baseUrl = true
-            ? 'http://localhost:3001'
-            : 'https://election.prabhatkhabar.com';
+        const baseUrl = 'https://election.prabhatkhabar.com';
 
         // Load CSS files
         const cssFiles = [
