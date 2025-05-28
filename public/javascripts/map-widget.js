@@ -157,7 +157,7 @@ class MapWidget {
             <div class="svg_container pb-12 flex flex-col items-center justify-center" id="svg_container" style="width: 100%">
                 <div class="const-map bihar">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:g="http://base.google.com/ns/1.0"
-                        style="margin-top: 30px" stroke-linejoin="round" stroke-linecap="round"
+                        style="" stroke-linejoin="round" stroke-linecap="round"
                         viewBox="0 0 800 630" height="400" width="500" baseProfile="tiny" version="1.2">
                         <g id="br">
                             <path data-id="cns-1" stroke="#ff0000"
@@ -2912,8 +2912,9 @@ class MapWidget {
                 <div class="responsive-style party_name_color flex gap-4 text-md"></div>
             </div>
         `;
-
-    document.body.appendChild(container);
+	
+	const mainContainer = document.querySelector("#election_map_container_v1_pk");
+    mainContainer.appendChild(container);
   }
 
   updateLoading() {
