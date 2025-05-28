@@ -1583,4 +1583,96 @@ router.get("/elections/map/top-candidates", async (req, res) => {
 	}
 });
 
+router.get("/election/hot-candidates", async (req, res) => {
+  try {
+    const { state, year } = req.query;
+
+    const result = await TempElection.aggregate([
+      // Match the election
+      { $match: { state: state, year: Number(year) } },
+
+      // Lookup candidates with population
+      {
+        $lookup: {
+          from: "candidates",
+          let: { candidateIds: "$electionInfo.candidates" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$_id", "$$candidateIds"] },
+                hotCandidate: true,
+              },
+            },
+            // Populate party
+            {
+              $lookup: {
+                from: "parties",
+                localField: "party",
+                foreignField: "_id",
+                as: "party",
+                pipeline: [
+                  { $project: { party: 1, color_code: 1 } }, // Only get party name and color
+                ],
+              },
+            },
+            // Populate constituency
+            {
+              $lookup: {
+                from: "constituencies",
+                localField: "constituency",
+                foreignField: "_id",
+                as: "constituency",
+                pipeline: [
+                  { $project: { name: 1 } }, // Only get constituency name
+                ],
+              },
+            },
+            // Project only needed fields
+            {
+              $project: {
+                name: 1,
+                image: 1,
+                party: { $arrayElemAt: ["$party", 0] }, // Unwind party
+                constituency: { $arrayElemAt: ["$constituency", 0] }, // Get first constituency
+              },
+            },
+          ],
+          as: "hotCandidates",
+        },
+      },
+
+      // Project final structure
+      {
+        $project: {
+          _id: 0,
+          hotCandidates: {
+            name: 1,
+            "party.party": 1,
+            "party.color_code": 1,
+            "constituency.name": 1,
+          },
+        },
+      },
+    ]);
+
+    if (!result.length) {
+      return res.status(404).json({
+        success: false,
+        message: "Election not found",
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: result[0].hotCandidates,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
 module.exports = router;
