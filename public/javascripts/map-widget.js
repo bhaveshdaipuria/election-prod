@@ -52,7 +52,7 @@ class MapWidget {
 
   // Add styles for year tabs
   addYearTabStyles() {
-    const styleId = "year-tabs-styles";
+    const styleId = "election_map_year_tabs-styles";
 
     // Check if styles already exist
     if (document.getElementById(styleId)) {
@@ -62,7 +62,7 @@ class MapWidget {
     const style = document.createElement("style");
     style.id = styleId;
     style.textContent = `
-      #yearTabs {
+      #election_map_container_v1_pk_year_tabs {
         display: flex;
         gap: 12px;
         margin: 20px 0;
@@ -71,7 +71,7 @@ class MapWidget {
 		justify-content: center;
       }
 
-      .year-tab {
+      .election_map_year_tab {
         padding: 8px 16px;
         border: 1px solid #ddd;
         border-radius: 20px;
@@ -87,7 +87,7 @@ class MapWidget {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
 
-      .year-tab:hover {
+      .election_map_year_tab:hover {
         border-color: #ff6b35;
         color: #ff6b35;
         background-color: #fff8f5;
@@ -95,7 +95,7 @@ class MapWidget {
         box-shadow: 0 2px 6px rgba(255, 107, 53, 0.2);
       }
 
-      .year-tab.active {
+      .election_map_year_tab.active {
         background-color: #ff6b35;
         border-color: #ff6b35;
         color: #fff;
@@ -103,7 +103,7 @@ class MapWidget {
         box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
       }
 
-      .year-tab.active:hover {
+      .election_map_year_tab.active:hover {
         background-color: #e55a2b;
         border-color: #e55a2b;
         transform: translateY(-1px);
@@ -111,12 +111,12 @@ class MapWidget {
       }
 
       @media (max-width: 768px) {
-        #yearTabs {
+        #election_map_container_v1_pk_year_tabs {
           gap: 8px;
           margin: 15px 0;
         }
         
-        .year-tab {
+        .election_map_year_tab {
           padding: 6px 12px;
           font-size: 13px;
           min-width: 50px;
@@ -150,7 +150,7 @@ class MapWidget {
                 <!-- live results start -->
             </div>
 
-			<div id="yearTabs">
+			<div id="election_map_container_v1_pk_year_tabs">
                
             </div>
 
@@ -2970,7 +2970,7 @@ class MapWidget {
   }
 
   async createYearTabs() {
-    const yearTabs = document.querySelector("#yearTabs");
+    const yearTabs = document.querySelector("#election_map_container_v1_pk_year_tabs");
 
     try {
       const result = await fetch(
@@ -2993,7 +2993,7 @@ class MapWidget {
 
       years.forEach((year) => {
         const tab = document.createElement("div");
-        tab.className = `year-tab ${year === this.currentYear ? "active" : ""}`;
+        tab.className = `election_map_year_tab ${year === this.currentYear ? "active" : ""}`;
         tab.textContent = year;
         tab.addEventListener("click", () => {
           this.currentYear = year;
@@ -3009,7 +3009,7 @@ class MapWidget {
   }
 
   updateActiveTab() {
-    document.querySelectorAll(".year-tab").forEach((tab) => {
+    document.querySelectorAll(".election_map_year_tab").forEach((tab) => {
       tab.classList.remove("active");
       if (parseInt(tab.textContent) === this.currentYear) {
         tab.classList.add("active");
