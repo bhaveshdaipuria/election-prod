@@ -5,10 +5,10 @@
   const DEFAULT_CONFIG = {
     containerId: "rw-container",
     title: "चुनाव परिणाम",
-    apiEndpoint: null,
-    state: null,
+    apiEndpoint: "https://election.prabhatkhabar.com/elections/state-elections",
+    state: "Bihar",
     years: [],
-    defaultYear: null,
+    defaultYear: 2020,
     loadingText: "डेटा लोड हो रहा है...",
     errorPrefix: "त्रुटि: ",
     retryText: "पुनः प्रयास करें",
