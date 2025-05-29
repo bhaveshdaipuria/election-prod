@@ -1440,16 +1440,16 @@ router.get("/elections/state-elections", async (req, res) => {
 
 router.get("/elections/map/top-candidates", async (req, res) => {
 	try {
-		const { state, year, type } = req.query;
+		const { state, year } = req.query;
 
-		if (!state || !year || !type) {
+		if (!state || !year) {
 			return res.status(400).json({
 				success: false,
-				message: "State, year, and type are required query parameters",
+				message: "State, year are required query parameters",
 			});
 		}
 
-		const key = `widget_bihar_election_map_${state}_${year}_${type}`;
+		const key = `widget_bihar_election_map_${state}_${year}`;
 		const cachedResults = await redis.get(key);
 
 		if (cachedResults) {
@@ -1460,8 +1460,9 @@ router.get("/elections/map/top-candidates", async (req, res) => {
 		const election = await TempElection.findOne({
 			state: state,
 			year: parseInt(year),
-			electionType: type,
 		}).lean();
+
+		const type = election.electionType;
 
 		if (!election) {
 			return res.status(404).json({

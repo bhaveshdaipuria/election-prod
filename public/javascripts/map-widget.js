@@ -2951,11 +2951,11 @@ class MapWidget {
     const params = new URLSearchParams(document.location.search);
     let stateName = params.get("state") || "Bihar";
     stateName = stateName[0].toUpperCase() + stateName.slice(1);
-    const type = params.get("type") || "general";
+    // const type = params.get("type") || "general";
 
     try {
       const response = await fetch(
-        `https://election.prabhatkhabar.com/elections/map/top-candidates?state=${stateName}&year=${clickedYear}&type=${type}`
+        `https://election.prabhatkhabar.com/elections/map/top-candidates?state=${stateName}&year=${clickedYear}`
       );
       const data = await response.json();
 
