@@ -89,19 +89,19 @@ router.post("/", isAdmin, async (req, res, next) => {
 // Get all constituencies relvent to the election
 router.get("/", async (req, res, next) => {
   try {
-    const { state, year, type } = req.query;
+    const { state, year } = req.query;
 
-    const key = `widget_cn_election_constituencies_${state}_${year}_${type}`;
+    const key = `widget_cn_election_constituencies_${state}_${year}`;
 
     const cachedResult = await redis.get(key);
     if (cachedResult) {
       return res.json(cachedResult);
     }
 
-    if (!state || !year || !type) {
+    if (!state || !year) {
       return res.status(400).json({
         success: false,
-        message: "State, year, and type are required query parameters",
+        message: "State, year are required query parameters",
       });
     }
 
@@ -109,7 +109,6 @@ router.get("/", async (req, res, next) => {
     const election = await TempElection.findOne({
       state: state,
       year: parseInt(year),
-      electionType: type,
     }).lean();
 
     if (!election) {

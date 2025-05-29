@@ -134,16 +134,16 @@ router.get("/hot-candidates", async (req, res, next) => {
 
 router.get("/cn-list", async (req, res, next) => {
   try {
-    const { constituencyName, state, year, type } = req.query;
+    const { constituencyName, state, year } = req.query;
 
-    if (!state || !year || !type) {
+    if (!state || !year) {
       return res.status(400).json({
         success: false,
         message: "State, year, and type are required query parameters",
       });
     }
 
-    const key = `widget_cn_election_candidates_${constituencyName}_${state}_${year}_${type}`;
+    const key = `widget_cn_election_candidates_${constituencyName}_${state}_${year}`;
     const cachedResult = await redis.get(key);
     if (cachedResult) {
       return res.json(cachedResult);
@@ -153,7 +153,6 @@ router.get("/cn-list", async (req, res, next) => {
     const election = await TempElection.findOne({
       state: state,
       year: parseInt(year),
-      electionType: type,
     }).lean();
 
     if (!election) {

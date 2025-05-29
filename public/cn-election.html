@@ -244,10 +244,10 @@
             let stateName = params.get("state") || "Bihar";
             stateName = stateName[0].toUpperCase() + stateName.slice(1);
             const year = params.get("year") || "2020";
-            const type = params.get("type") || "general";
+            // const type = params.get("type") || "general";
 
             const response = await fetch(
-              `/api/constituency?state=${stateName}&year=${year}&type=${type}`
+              `/api/constituency?state=${stateName}&year=${year}`
             );
             if (!response.ok) throw new Error("Failed to fetch constituencies");
 
@@ -289,10 +289,10 @@
             let stateName = params.get("state") || "Bihar";
             stateName = stateName[0].toUpperCase() + stateName.slice(1);
             const year = params.get("year") || "2020";
-            const type = params.get("type") || "general";
+            // const type = params.get("type") || "general";
 
             const response = await fetch(
-              `/api/candidate/cn-list?constituencyName=${constituency}&state=${stateName}&year=${year}&type=${type}`
+              `/api/candidate/cn-list?constituencyName=${constituency}&state=${stateName}&year=${year}`
             );
             if (!response.ok) throw new Error("Failed to fetch candidates");
 
