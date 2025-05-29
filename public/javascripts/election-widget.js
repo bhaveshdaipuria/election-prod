@@ -3,7 +3,7 @@
 
     // Default configuration
     const DEFAULT_CONFIG = {
-        containerId: 'election-widget',
+        containerId: 'ew-container',
         title: 'बिहार विधानसभा चुनाव परिणाम',
         baseUrl: 'https://election.prabhatkhabar.com',
         apiEndpoint: '/elections/state-elections',
@@ -14,18 +14,18 @@
 
     // CSS Styles
     const CSS_STYLES = `
-        .election-widget * {
+        .ew-widget * {
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
             margin: 0;
             padding: 0;
         }
 
-        .election-widget {
+        .ew-widget {
             background-color: #f0f2f5;
         }
 
-        .election-widget .container {
+        .ew-widget .ew-container {
             margin: 0 auto;
             background-color: #fff;
             border-radius: 12px;
@@ -33,20 +33,20 @@
             overflow: hidden;
         }
 
-        .election-widget .header {
+        .ew-widget .ew-header {
             background: linear-gradient(135deg, #4d3c22 0%, #705c3d 100%);
             color: white;
             padding: 20px 30px;
             text-align: center;
         }
 
-        .election-widget .header h1 {
+        .ew-widget .ew-header h1 {
             margin: 0;
             font-size: 28px;
             font-weight: 600;
         }
 
-        .election-widget .election-tabs {
+        .ew-widget .ew-tabs {
             display: flex;
             border-bottom: 1px solid #eaeaea;
             background: #fff;
@@ -55,16 +55,16 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        .election-widget .election-tabs::-webkit-scrollbar {
+        .ew-widget .ew-tabs::-webkit-scrollbar {
             height: 4px;
         }
 
-        .election-widget .election-tabs::-webkit-scrollbar-thumb {
+        .ew-widget .ew-tabs::-webkit-scrollbar-thumb {
             background-color: rgba(0, 0, 0, 0.2);
             border-radius: 4px;
         }
 
-        .election-widget .tab {
+        .ew-widget .ew-tab {
             padding: 15px 25px;
             font-size: 16px;
             cursor: pointer;
@@ -74,24 +74,24 @@
             white-space: nowrap;
         }
 
-        .election-widget .tab.active {
+        .ew-widget .ew-tab.active {
             border-bottom: 3px solid #ff6a00;
             color: #000;
             font-weight: 600;
         }
 
-        .election-widget .tab:hover:not(.active) {
+        .ew-widget .ew-tab:hover:not(.active) {
             background-color: #f8f9fa;
             border-bottom: 3px solid #ddd;
         }
 
-        .election-widget .election-content {
+        .ew-widget .ew-content {
             display: flex;
             padding: 30px;
             gap: 40px;
         }
 
-        .election-widget .chart-container {
+        .ew-widget .ew-chart-container {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -101,7 +101,7 @@
             min-width: 320px;
         }
 
-        .election-widget .summary-bar {
+        .ew-widget .ew-summary-bar {
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 8px;
@@ -114,7 +114,7 @@
             width: 100%;
         }
 
-        .election-widget .progress-bar {
+        .ew-widget .ew-progress-bar {
             height: 4px;
             width: 100%;
             background-color: #eee;
@@ -124,14 +124,14 @@
             overflow: hidden;
         }
 
-        .election-widget .progress-fill {
+        .ew-widget .ew-progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #ff6a00, #ff9d00);
             width: 0%;
             transition: width 0.5s ease;
         }
 
-        .election-widget .donut-chart {
+        .ew-widget .ew-donut-chart {
             width: 320px;
             height: 320px;
             position: relative;
@@ -139,7 +139,7 @@
             transition: all 0.3s ease;
         }
 
-        .election-widget .center-text {
+        .ew-widget .ew-center-text {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -155,14 +155,14 @@
             justify-content: center;
         }
 
-        .election-widget .center-text h2 {
+        .ew-widget .ew-center-text h2 {
             font-size: 42px;
             font-weight: bold;
             margin-bottom: 5px;
             color: #4d3c22;
         }
 
-        .election-widget .legend {
+        .ew-widget .ew-legend {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
@@ -176,16 +176,16 @@
             scrollbar-width: thin;
         }
 
-        .election-widget .legend::-webkit-scrollbar {
+        .ew-widget .ew-legend::-webkit-scrollbar {
             width: 4px;
         }
 
-        .election-widget .legend::-webkit-scrollbar-thumb {
+        .ew-widget .ew-legend::-webkit-scrollbar-thumb {
             background-color: rgba(0, 0, 0, 0.2);
             border-radius: 4px;
         }
 
-        .election-widget .legend-item {
+        .ew-widget .ew-legend-item {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -196,12 +196,12 @@
             transition: transform 0.2s;
         }
 
-        .election-widget .legend-item:hover {
+        .ew-widget .ew-legend-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .election-widget .results-table-container {
+        .ew-widget .ew-results-container {
             flex: 1.2;
             overflow: hidden;
             display: flex;
@@ -210,28 +210,28 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
-        .election-widget .results-table {
+        .ew-widget .ew-results-table {
             flex: 1;
             overflow: auto;
             max-height: 500px;
             scrollbar-width: thin;
         }
 
-        .election-widget .results-table::-webkit-scrollbar {
+        .ew-widget .ew-results-table::-webkit-scrollbar {
             width: 6px;
         }
 
-        .election-widget .results-table::-webkit-scrollbar-thumb {
+        .ew-widget .ew-results-table::-webkit-scrollbar-thumb {
             background-color: rgba(0, 0, 0, 0.2);
             border-radius: 4px;
         }
 
-        .election-widget table {
+        .ew-widget table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .election-widget th {
+        .ew-widget th {
             background-color: #4d3c22;
             color: white;
             padding: 14px 15px;
@@ -242,37 +242,37 @@
             z-index: 10;
         }
 
-        .election-widget td {
+        .ew-widget td {
             padding: 14px 15px;
             border-bottom: 1px solid #eee;
         }
 
-        .election-widget tr:nth-child(even) {
+        .ew-widget tr:nth-child(even) {
             background-color: #f8f9fa;
         }
 
-        .election-widget tr:hover {
+        .ew-widget tr:hover {
             background-color: #f0f2f5;
         }
 
-        .election-widget .party-cell {
+        .ew-widget .ew-party-cell {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .election-widget .party-color {
+        .ew-widget .ew-party-color {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             display: inline-block;
         }
 
-        .election-widget .seats-won {
+        .ew-widget .ew-seats-won {
             font-weight: 600;
         }
 
-        .election-widget .refresh-info {
+        .ew-widget .ew-refresh-info {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -283,7 +283,7 @@
             color: #666;
         }
 
-        .election-widget .loading {
+        .ew-widget .ew-loading {
             position: absolute;
             top: 0;
             left: 0;
@@ -299,12 +299,12 @@
             transition: opacity 0.3s;
         }
 
-        .election-widget .loading.active {
+        .ew-widget .ew-loading.active {
             opacity: 1;
             pointer-events: all;
         }
 
-        .election-widget .spinner {
+        .ew-widget .ew-spinner {
             width: 40px;
             height: 40px;
             border: 4px solid rgba(77, 60, 34, 0.1);
@@ -319,62 +319,62 @@
         }
 
         @media (max-width: 992px) {
-            .election-widget .election-content {
+            .ew-widget .ew-content {
                 flex-direction: column;
                 padding: 20px;
             }
         }
 
         @media (max-width: 768px) {
-            .election-widget .election-content {
+            .ew-widget .ew-content {
                 padding: 15px;
             }
 
-            .election-widget .donut-chart {
+            .ew-widget .ew-donut-chart {
                 width: 280px;
                 height: 280px;
             }
 
-            .election-widget .center-text {
+            .ew-widget .ew-center-text {
                 width: 140px;
                 height: 140px;
             }
 
-            .election-widget .center-text h2 {
+            .ew-widget .ew-center-text h2 {
                 font-size: 36px;
             }
 
-            .election-widget .header h1 {
+            .ew-widget .ew-header h1 {
                 font-size: 24px;
             }
 
-            .election-widget th,
-            .election-widget td {
+            .ew-widget th,
+            .ew-widget td {
                 padding: 12px 10px;
             }
         }
 
         @media (max-width: 480px) {
-            .election-widget .donut-chart {
+            .ew-widget .ew-donut-chart {
                 width: 240px;
                 height: 240px;
             }
 
-            .election-widget .center-text {
+            .ew-widget .ew-center-text {
                 width: 120px;
                 height: 120px;
             }
 
-            .election-widget .center-text h2 {
+            .ew-widget .ew-center-text h2 {
                 font-size: 32px;
             }
 
-            .election-widget .tab {
+            .ew-widget .ew-tab {
                 padding: 12px 15px;
                 font-size: 14px;
             }
 
-            .election-widget .legend-item {
+            .ew-widget .ew-legend-item {
                 padding: 4px 8px;
                 font-size: 14px;
             }
@@ -415,52 +415,52 @@
         }
 
         createWidgetStructure() {
-            this.container.className = 'election-widget';
+            this.container.className = 'ew-widget';
             this.container.innerHTML = `
-                <div class="container">
-                    <div class="header">
+                <div class="ew-container">
+                    <div class="ew-header">
                         <h1>${this.config.title}</h1>
                     </div>
-                    <div class="election-tabs"></div>
-                    <div class="election-content">
-                        <div class="chart-container">
-                            <div class="summary-bar">
+                    <div class="ew-tabs"></div>
+                    <div class="ew-content">
+                        <div class="ew-chart-container">
+                            <div class="ew-summary-bar">
                                 <div>
-                                    <span id="electionYear"></span>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" id="progressFill"></div>
+                                    <span id="ew-electionYear"></span>
+                                    <div class="ew-progress-bar">
+                                        <div class="ew-progress-fill" id="ew-progressFill"></div>
                                     </div>
                                 </div>
-                                <div id="seatCounter"></div>
+                                <div id="ew-seatCounter"></div>
                             </div>
-                            <div class="donut-chart" id="donutChart"></div>
-                            <div class="center-text">
+                            <div class="ew-donut-chart" id="ew-donutChart"></div>
+                            <div class="ew-center-text">
                                 <h2></h2>
                                 <p>बहुमत</p>
                             </div>
-                            <div class="legend"></div>
+                            <div class="ew-legend"></div>
                         </div>
-                        <div class="results-table-container">
-                            <div class="results-table">
+                        <div class="ew-results-container">
+                            <div class="ew-results-table">
                                 <table>
                                     <thead>
                                         <tr>
                                             <th>पार्टी</th>
-                                            <th id="election_vote_status">जीते</th>
+                                            <th id="ew-vote-status">जीते</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>
                             </div>
-                            <div class="refresh-info">
+                            <div class="ew-refresh-info">
                                 <span>Auto-refreshing every 30 seconds</span>
-                                <span id="lastUpdated">Last updated: Just now</span>
+                                <span id="ew-lastUpdated">Last updated: Just now</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="loading">
-                    <div class="spinner"></div>
+                <div class="ew-loading">
+                    <div class="ew-spinner"></div>
                 </div>
             `;
         }
@@ -561,16 +561,16 @@
                 this.activeTabKey = `${this.config.state} ${years[0]}`;
             }
 
-            const tabsContainer = this.container.querySelector('.election-tabs');
+            const tabsContainer = this.container.querySelector('.ew-tabs');
             tabsContainer.innerHTML = '';
 
             years.forEach(year => {
                 const tabKey = `${this.config.state} ${year}`;
                 const tab = document.createElement('div');
-                tab.className = `tab${tabKey === this.activeTabKey ? ' active' : ''}`;
+                tab.className = `ew-tab${tabKey === this.activeTabKey ? ' active' : ''}`;
                 tab.textContent = tabKey;
                 tab.addEventListener('click', () => {
-                    this.container.querySelector('.tab.active').classList.remove('active');
+                    this.container.querySelector('.ew-tab.active').classList.remove('active');
                     tab.classList.add('active');
                     this.activeTabKey = tab.textContent.trim();
                     this.renderElectionData(this.activeTabKey);
@@ -587,15 +587,15 @@
 
             // Update election year and progress info
             const yearText = key.split(' ')[1];
-            document.getElementById('electionYear').textContent = `${key} (${data.declaredSeats}/${data.totalSeats} सीटें)`;
-            document.getElementById('seatCounter').textContent = `बहुमत: ${data.majorityMark} सीटें`;
+            document.getElementById('ew-electionYear').textContent = `${key} (${data.declaredSeats}/${data.totalSeats} सीटें)`;
+            document.getElementById('ew-seatCounter').textContent = `बहुमत: ${data.majorityMark} सीटें`;
 
             // Update progress bar
             const progressPercentage = (data.declaredSeats / data.totalSeats) * 100;
-            document.getElementById('progressFill').style.width = `${progressPercentage}%`;
+            document.getElementById('ew-progressFill').style.width = `${progressPercentage}%`;
 
             // Update center text
-            this.container.querySelector('.center-text h2').textContent = data.majorityMark;
+            this.container.querySelector('.ew-center-text h2').textContent = data.majorityMark;
 
             // Update table
             const tbody = this.container.querySelector('tbody');
@@ -604,25 +604,25 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
-                        <div class="party-cell">
-                            <span class="party-color" style="background-color: ${party.color}"></span>
+                        <div class="ew-party-cell">
+                            <span class="ew-party-color" style="background-color: ${party.color}"></span>
                             ${party.name}
                         </div>
                     </td>
-                    <td class="seats-won">${party.won}</td>
+                    <td class="ew-seats-won">${party.won}</td>
                 `;
                 tbody.appendChild(row);
             });
 
             // Update legend
-            const legendContainer = this.container.querySelector('.legend');
+            const legendContainer = this.container.querySelector('.ew-legend');
             legendContainer.innerHTML = '';
             data.parties.forEach(party => {
                 if (party.won > 0) {
                     const legendItem = document.createElement('div');
-                    legendItem.className = 'legend-item';
+                    legendItem.className = 'ew-legend-item';
                     legendItem.innerHTML = `
-                        <div class="legend-color" style="background-color: ${party.color}"></div>
+                        <div class="ew-legend-color" style="background-color: ${party.color}"></div>
                         <span>${party.name}: ${party.won}</span>
                     `;
                     legendContainer.appendChild(legendItem);
@@ -633,7 +633,7 @@
         }
 
         drawDonutChart(data) {
-            const container = this.container.querySelector('#donutChart');
+            const container = this.container.querySelector('#ew-donutChart');
             container.innerHTML = '';
 
             const svgNS = 'http://www.w3.org/2000/svg';
@@ -722,7 +722,7 @@
         }
 
         showLoading(show) {
-            const loadingElement = this.container.querySelector('.loading');
+            const loadingElement = this.container.querySelector('.ew-loading');
             if (show) {
                 loadingElement.classList.add('active');
             } else {
@@ -752,7 +752,7 @@
                 text = `${hours} hour${hours > 1 ? 's' : ''} ago`;
             }
 
-            this.container.querySelector('#lastUpdated').textContent = `Last updated: ${text}`;
+            this.container.querySelector('#ew-lastUpdated').textContent = `Last updated: ${text}`;
         }
 
         startAutoRefresh() {
@@ -775,12 +775,12 @@
         console.log('Initializing election widget...');
         
         // First try to find containers with data-election-widget attribute
-        const containers = document.querySelectorAll('[data-election-widget]');
-        console.log('Found containers with data-election-widget:', containers.length);
+        const containers = document.querySelectorAll('[data-ew-widget]');
+        console.log('Found containers with data-ew-widget:', containers.length);
         
         if (containers.length === 0) {
             // If no containers found with data attribute, try to find by ID
-            const container = document.getElementById('election-widget');
+            const container = document.getElementById('ew-container');
             if (container) {
                 console.log('Found container by ID:', container.id);
                 try {

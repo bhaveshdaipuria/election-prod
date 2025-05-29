@@ -2961,7 +2961,7 @@ class MapWidget {
 
       document.querySelector(
         ".main_title"
-      ).innerText = `${data.data.electionName}`;
+      ).innerText = `बिहार विधानसभा चुनाव`;
       this.renderPartiesColorAndName(data.data.parties);
       this.applyColorsAndPopovers(data);
     } catch (error) {
