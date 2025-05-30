@@ -146,6 +146,8 @@
       this.constituencies = new Set();
       this.isLoading = false;
       this.lastFetchTime = 0;
+      this.currentYear = "";
+      this.stateName = "Bihar";
       this.FETCH_COOLDOWN = 5000;
       this.renderSkeleton();
       this.initialize();
@@ -154,6 +156,7 @@
     renderSkeleton() {
       this.container.className = "cnew-widget";
       this.container.innerHTML = `
+      <div id="election_cnew_container_v1_pk_year_tabs"></div>
         <div class="cnew-header">
           <select id="cnew-select" class="cnew-select">
             <option value="">Loading constituencies...</option>
@@ -178,19 +181,151 @@
     }
 
     async initialize() {
-      await this.fetchConstituencies();
-      this.select.addEventListener("change", (e) => this.handleConstituencyChange(e));
+      this.addYearTabStyles();
+      await this.createYearTabs();
+      this.fetchConstituencies(); // first time when the page loads
+      this.select.addEventListener("change", (e) =>
+        this.handleConstituencyChange(e)
+      );
       this.setupRefreshInterval();
+    }
+
+    // Add styles for year tabs
+    addYearTabStyles() {
+      const styleId = "election_cnew_container_year_tabs-styles";
+
+      // Check if styles already exist
+      if (document.getElementById(styleId)) {
+        return;
+      }
+
+      const style = document.createElement("style");
+      style.id = styleId;
+      style.textContent = `
+      #election_cnew_container_v1_pk_year_tabs {
+        display: flex;
+        gap: 12px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        align-items: center;
+		justify-content: center;
+      }
+
+      .election_cnew_container_year_tab {
+        padding: 8px 16px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        background-color: #fff;
+        color: #666;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        user-select: none;
+        min-width: 60px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .election_cnew_container_year_tab:hover {
+        border-color: #ff6b35;
+        color: #ff6b35;
+        background-color: #fff8f5;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(255, 107, 53, 0.2);
+      }
+
+      .election_cnew_container_year_tab.active {
+        background-color: #ff6b35;
+        border-color: #ff6b35;
+        color: #fff !important;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
+      }
+
+      .election_cnew_container_year_tab.active:hover {
+        background-color: #e55a2b;
+        border-color: #e55a2b;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(229, 90, 43, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        #election_map_container_v1_pk_year_tabs {
+          gap: 8px;
+          margin: 15px 0;
+        }
+        
+        .election_map_year_tab {
+          padding: 6px 12px;
+          font-size: 13px;
+          min-width: 50px;
+        }
+      }
+    `;
+
+      document.head.appendChild(style);
+    }
+
+    async createYearTabs() {
+      const yearTabs = document.querySelector(
+        "#election_cnew_container_v1_pk_year_tabs"
+      );
+
+      try {
+        const result = await fetch(
+          `https://election.prabhatkhabar.com/election/years/Bihar`
+        );
+        const allYears = (await result.json()).data.availableYears;
+
+        console.log(allYears);
+
+        // Fix: Set currentYear as instance property
+        this.currentYear = allYears[0];
+
+        const years = [...new Set(allYears.map((item) => item))].sort(
+          (a, b) => b - a
+        );
+
+        yearTabs.innerHTML = "";
+
+        years.forEach((year) => {
+          const tab = document.createElement("div");
+          tab.className = `election_cnew_container_year_tab ${
+            year === this.currentYear ? "active" : ""
+          }`;
+          tab.textContent = year;
+          tab.addEventListener("click", () => {
+            this.currentYear = year;
+            this.updateActiveTab();
+            // Optionally reload data for the selected year
+            this.fetchConstituencies();
+          });
+          yearTabs.appendChild(tab);
+        });
+      } catch (error) {
+        console.error("Error fetching years:", error);
+      }
+    }
+
+    updateActiveTab() {
+      document
+        .querySelectorAll(".election_cnew_container_year_tab")
+        .forEach((tab) => {
+          tab.classList.remove("active");
+          if (parseInt(tab.textContent) === this.currentYear) {
+            tab.classList.add("active");
+          }
+        });
     }
 
     async fetchConstituencies() {
       try {
         const params = new URLSearchParams(document.location.search);
-        let stateName = params.get("state") || "Bihar";
-        stateName = stateName[0].toUpperCase() + stateName.slice(1);
-        const year = params.get("year") || "2020";
         const type = params.get("type") || "general";
-        const response = await fetch(`https://election.prabhatkhabar.com/api/constituency?state=${stateName}&year=${year}&type=${type}`);
+        const response = await fetch(
+          `https://election.prabhatkhabar.com/api/constituency?state=${this.stateName}&year=${this.currentYear}&type=${type}`
+        );
         if (!response.ok) throw new Error("Failed to fetch constituencies");
         const constituencies = await response.json();
         this.constituencies = new Set(constituencies.map((c) => c.name));
@@ -201,14 +336,18 @@
           await this.fetchCandidates(firstConstituency);
         }
       } catch (error) {
-        this.select.innerHTML = '<option value="">Failed to load constituencies</option>';
+        this.select.innerHTML =
+          '<option value="">Failed to load constituencies</option>';
       }
     }
 
     updateConstituencyDropdown() {
       const sortedConstituencies = Array.from(this.constituencies);
       this.select.innerHTML = sortedConstituencies
-        .map((constituency) => `<option value="${constituency}">${constituency}</option>`) 
+        .map(
+          (constituency) =>
+            `<option value="${constituency}">${constituency}</option>`
+        )
         .join("");
     }
 
@@ -216,18 +355,19 @@
       this.isLoading = true;
       try {
         const params = new URLSearchParams(document.location.search);
-        let stateName = params.get("state") || "Bihar";
-        stateName = stateName[0].toUpperCase() + stateName.slice(1);
-        const year = params.get("year") || "2020";
+
         const type = params.get("type") || "general";
-        const response = await fetch(`https://election.prabhatkhabar.com/api/candidate/cn-list?constituencyName=${constituency}&state=${stateName}&year=${year}&type=${type}`);
+        const response = await fetch(
+          `https://election.prabhatkhabar.com/api/candidate/cn-list?constituencyName=${constituency}&state=${this.stateName}&year=${this.currentYear}&type=${type}`
+        );
         if (!response.ok) throw new Error("Failed to fetch candidates");
         const newCandidatesData = await response.json();
         this.candidatesData = newCandidatesData;
         this.renderCandidates();
         if (newCandidatesData.length > 0) {
           if (newCandidatesData[0].constituency[0].won !== "ongoing") {
-            this.container.querySelector(".cnew-aage-piche").textContent = "हार / जीत";
+            this.container.querySelector(".cnew-aage-piche").textContent =
+              "हार / जीत";
           }
         }
       } catch (error) {
@@ -246,8 +386,17 @@
       return luminance > 186 ? "black" : "white";
     }
 
-    createCandidateRow(candidate, isFirstCandidate, showLeadAndTrailing, votesReceived, status, constituencyStatus, index) {
-      const statusIconClass = status === "Won" ? "cnew-status-up" : "cnew-status-down";
+    createCandidateRow(
+      candidate,
+      isFirstCandidate,
+      showLeadAndTrailing,
+      votesReceived,
+      status,
+      constituencyStatus,
+      index
+    ) {
+      const statusIconClass =
+        status === "Won" ? "cnew-status-up" : "cnew-status-down";
       const textColor = this.getContrastColor(candidate.party.color_code);
       const won = constituencyStatus || "ongoing";
       const badgeText =
@@ -265,7 +414,10 @@
           <td class="cnew-cand">
             <div class="cnew-candidate-info">
               <div class="cnew-avatar">
-                <img src="${candidate.image || "https://s3.amazonaws.com/37assets/svn/765-default-avatar.png"}"
+                <img src="${
+                  candidate.image ||
+                  "https://s3.amazonaws.com/37assets/svn/765-default-avatar.png"
+                }"
                   alt="${candidate.name}"
                   width="32" height="32"
                   loading="lazy"
@@ -278,11 +430,15 @@
             </div>
           </td>
           <td>
-            <div class="cnew-party-badge" style="background-color: ${candidate.party.color_code}; color: ${textColor};">
+            <div class="cnew-party-badge" style="background-color: ${
+              candidate.party.color_code
+            }; color: ${textColor};">
               ${candidate.party.party}
             </div>
           </td>
-          <td class="cnew-hide-mobile">${Number(votesReceived).toLocaleString()}</td>
+          <td class="cnew-hide-mobile">${Number(
+            votesReceived
+          ).toLocaleString()}</td>
           <td class="${statusIconClass} font-bold">${badgeText}</td>
         </tr>
       `;
@@ -290,10 +446,14 @@
 
     renderCandidates() {
       if (!this.candidatesData.length) {
-        this.tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">No candidates found</td></tr>';
+        this.tableBody.innerHTML =
+          '<tr><td colspan="4" class="text-center py-4">No candidates found</td></tr>';
         return;
       }
-      const showLeadAndTrailing = this.candidatesData.reduce((sum, candidate) => sum + candidate.votesReceived, 0);
+      const showLeadAndTrailing = this.candidatesData.reduce(
+        (sum, candidate) => sum + candidate.votesReceived,
+        0
+      );
       this.tableBody.innerHTML = this.candidatesData
         .sort((a, b) => b.votesRecieved - a.votesRecieved)
         .map((candidate, index) =>
@@ -350,4 +510,4 @@
   // Export for manual use
   window.CnElectionWidget = CnElectionWidget;
   window.initCnElectionWidget = initCnElectionWidget;
-})(); 
+})();
