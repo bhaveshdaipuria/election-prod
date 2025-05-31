@@ -7,22 +7,23 @@ function injectStyles() {
   const style = document.createElement("style");
   style.textContent = `
     #hot-candidate-status-widget-pk * { box-sizing: border-box; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; }
-    #hot-candidate-status-widget-pk { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .widget_hot_candidate_list_title { font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #000; }
-    .widget_hot_candidate_list_filters { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
-    .widget_hot_candidate_list_filter_label { font-size: 14px; color: #666; margin-right: 8px; }
-    .widget_hot_candidate_list_years { display: flex; gap: 8px; }
+    #hot-candidate-status-widget-pk { background: #fff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .widget_hot_candidate_list_title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #000; }
+    .widget_hot_candidate_list_filters { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+    .widget_hot_candidate_list_filter_group { display: flex; align-items: center; gap: 6px; }
+    .widget_hot_candidate_list_filter_label { font-size: 13px; color: #666; margin-right: 6px; }
+    .widget_hot_candidate_list_years { display: flex; gap: 6px; }
     .widget_hot_candidate_list_filter_btn { 
-      padding: 8px 16px; 
-      border-radius: 20px; 
+      padding: 6px 12px; 
+      border-radius: 16px; 
       border: 1px solid #ddd; 
       background: #fff; 
       cursor: pointer; 
-      font-size: 14px; 
+      font-size: 13px; 
       font-weight: 500;
       color: #666;
       transition: all 0.2s ease;
-      min-width: 60px;
+      min-width: 50px;
       text-align: center;
     }
     .widget_hot_candidate_list_filter_btn.active { 
@@ -31,13 +32,13 @@ function injectStyles() {
       border-color: #ff6b35; 
     }
     .widget_hot_candidate_list_party_select { 
-      padding: 8px 16px; 
-      border-radius: 20px; 
+      padding: 6px 12px; 
+      border-radius: 16px; 
       border: 1px solid #ddd; 
-      font-size: 14px; 
+      font-size: 13px; 
       background: #fff;
       color: #666;
-      min-width: 100px;
+      min-width: 90px;
       cursor: pointer;
     }
     .widget_hot_candidate_list_search { 
@@ -45,37 +46,45 @@ function injectStyles() {
       position: relative;
     }
     .widget_hot_candidate_list_search input { 
-      padding: 8px 16px 8px 40px; 
-      border-radius: 20px; 
+      padding: 6px 12px 6px 32px; 
+      border-radius: 16px; 
       border: 1px solid #ddd; 
-      font-size: 14px; 
-      width: 200px;
+      font-size: 13px; 
+      width: 180px;
       background: #fff;
       color: #333;
     }
     .widget_hot_candidate_list_search::before {
       content: '🔍';
       position: absolute;
-      left: 12px;
+      left: 10px;
       top: 50%;
       transform: translateY(-50%);
       color: #999;
-      font-size: 14px;
+      font-size: 13px;
     }
-    .widget_hot_candidate_list_list { margin-top: 20px; }
-    .widget_hot_candidate_list_row { 
-      display: flex; 
-      align-items: center; 
-      padding: 16px 0; 
+    .widget_hot_candidate_list_list { margin-top: 12px; }
+    .widget_hot_candidate_list_row {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      gap: 15px;
       border-bottom: 1px solid #f0f0f0;
       transition: background 0.2s;
-      gap: 60px;
+      justify-content: space-between;
     }
     .widget_hot_candidate_list_row:last-child { border-bottom: none; }
     .widget_hot_candidate_list_row:hover { background: #fafafa; }
+    .widget_hot_candidate_list_candidate_info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-grow: 1;
+      min-width: 150px;
+    }
     .widget_hot_candidate_list_img { 
-      width: 48px; 
-      height: 48px; 
+      width: 40px; 
+      height: 40px; 
       border-radius: 50%; 
       object-fit: cover; 
       background: #f5f5f5;
@@ -84,17 +93,19 @@ function injectStyles() {
     }
     .widget_hot_candidate_list_name { 
       font-weight: 600; 
-      font-size: 16px; 
+      font-size: 14px; 
       color: #000;
-      width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .widget_hot_candidate_list_status { 
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 16px;
+      font-size: 11px;
       font-weight: 700;
       color: #fff;
-      min-width: 50px;
+      min-width: 40px;
       text-align: center;
     }
     .widget_hot_candidate_list_status.won { background: #22c55e; }
@@ -102,13 +113,13 @@ function injectStyles() {
     .widget_hot_candidate_list_party { 
       display: flex; 
       align-items: center; 
-      gap: 8px;
-      min-width: 120px;
+      gap: 6px;
+      min-width: 100px;
       flex-shrink: 0;
     }
     .widget_hot_candidate_list_party_logo { 
-      width: 32px; 
-      height: 32px; 
+      width: 28px; 
+      height: 28px; 
       border-radius: 50%; 
       object-fit: contain;
       background: #fff;
@@ -116,72 +127,80 @@ function injectStyles() {
       flex-shrink: 0;
     }
     .widget_hot_candidate_list_party_color { 
-      width: 32px; 
-      height: 32px; 
+      width: 28px; 
+      height: 28px; 
       border-radius: 50%; 
       border: 1px solid #eee;
       flex-shrink: 0;
     }
     .widget_hot_candidate_list_party_name { 
       font-weight: 700; 
-      font-size: 14px; 
+      font-size: 13px; 
       color: #000;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 80px;
+      max-width: 70px;
     }
     
     @media (max-width: 768px) {
-      #hot-candidate-status-widget-pk { padding: 16px; margin: 10px; }
-      .widget_hot_candidate_list_title { font-size: 20px; }
+      #hot-candidate-status-widget-pk { padding: 12px; margin: 8px; }
+      .widget_hot_candidate_list_title { font-size: 18px; text-align: center; }
       .widget_hot_candidate_list_filters { 
         flex-direction: column; 
         align-items: stretch; 
-        gap: 12px; 
+        gap: 8px; 
       }
-      .widget_hot_candidate_list_filter_label { display: block; margin-bottom: 8px; }
+      .widget_hot_candidate_list_filter_label { display: block; margin-bottom: 6px; }
       .widget_hot_candidate_list_years { justify-content: left; }
       .widget_hot_candidate_list_search { margin-left: 0; }
       .widget_hot_candidate_list_search input { width: 100%; }
       .widget_hot_candidate_list_row { 
-        padding: 12px 0; 
+        padding: 8px 0; 
       }
-      .widget_hot_candidate_list_img { width: 40px; height: 40px; }
-      .widget_hot_candidate_list_name { font-size: 14px; }
+      .widget_hot_candidate_list_img { width: 36px; height: 36px; }
+      .widget_hot_candidate_list_candidate_info { min-width: 120px; }
+      .widget_hot_candidate_list_name { font-size: 13px; }
       .widget_hot_candidate_list_status { 
-        padding: 4px 8px; 
+        padding: 3px 6px; 
         font-size: 10px; 
-        min-width: 40px;
+        min-width: 35px;
       }
-      .widget_hot_candidate_list_party { min-width: 100px; }
+      .widget_hot_candidate_list_party { min-width: 90px; }
       .widget_hot_candidate_list_party_logo, 
-      .widget_hot_candidate_list_party_color { width: 28px; height: 28px; }
+      .widget_hot_candidate_list_party_color { width: 24px; height: 24px; }
       .widget_hot_candidate_list_party_name { 
         font-size: 12px; 
-        max-width: 60px;
+        max-width: 55px;
       }
     }
     
     @media (max-width: 480px) {
-      .widget_hot_candidate_list_title { font-size: 18px; }
-      .widget_hot_candidate_list_filter_btn { padding: 6px 12px; font-size: 12px; }
-      .widget_hot_candidate_list_party_select { font-size: 12px; padding: 6px 12px; }
-      .widget_hot_candidate_list_search input { font-size: 12px; padding: 6px 12px 6px 32px; }
-      .widget_hot_candidate_list_row { gap: 8px; }
-      .widget_hot_candidate_list_img { width: 36px; height: 36px; }
-      .widget_hot_candidate_list_name { font-size: 13px; }
-      .widget_hot_candidate_list_status { 
-        padding: 3px 6px; 
-        font-size: 9px; 
-        min-width: 35px;
+      .widget_hot_candidate_list_title { font-size: 16px; text-align: center; }
+      .widget_hot_candidate_list_filter_btn { padding: 5px 10px; font-size: 11px; }
+      .widget_hot_candidate_list_party_select { font-size: 11px; padding: 5px 10px; min-width: 70px; }
+      .widget_hot_candidate_list_search input { font-size: 11px; padding: 5px 10px 5px 30px; width: 100%; }
+      .widget_hot_candidate_list_search::before {
+        left: 8px;
+        font-size: 12px;
       }
-      .widget_hot_candidate_list_party { min-width: 80px; }
+      .widget_hot_candidate_list_row { 
+        justify-content: space-between; padding: 6px 0; 
+      }
+      .widget_hot_candidate_list_candidate_info { min-width: 100px; gap: 6px; }
+      .widget_hot_candidate_list_img { width: 32px; height: 32px; }
+      .widget_hot_candidate_list_name { font-size: 12px; }
+      .widget_hot_candidate_list_status { 
+        padding: 2px 5px; 
+        font-size: 8px; 
+        min-width: 30px;
+      }
+      .widget_hot_candidate_list_party { min-width: 70px; gap: 4px; }
       .widget_hot_candidate_list_party_logo, 
-      .widget_hot_candidate_list_party_color { width: 24px; height: 24px; }
+      .widget_hot_candidate_list_party_color { width: 20px; height: 20px; }
       .widget_hot_candidate_list_party_name { 
-        font-size: 11px; 
-        max-width: 45px;
+        font-size: 10px; 
+        max-width: 40px;
       }
     }
   `;
@@ -213,12 +232,17 @@ function renderWidget() {
   const filterByLabel = document.createElement("div");
   filterByLabel.className = "widget_hot_candidate_list_filter_label";
   filterByLabel.textContent = "Filter by:";
-  filters.appendChild(filterByLabel);
 
   // Year filter container
   const yearBtnsContainer = document.createElement("div");
   yearBtnsContainer.className = "widget_hot_candidate_list_years";
-  filters.appendChild(yearBtnsContainer);
+
+  // Filter group for label and years
+  const filterGroup = document.createElement("div");
+  filterGroup.className = "widget_hot_candidate_list_filter_group";
+  filterGroup.appendChild(filterByLabel);
+  filterGroup.appendChild(yearBtnsContainer);
+  filters.appendChild(filterGroup);
 
   // Party filter
   const partySelect = document.createElement("select");
@@ -360,25 +384,30 @@ function renderWidget() {
         const row = document.createElement("div");
         row.className = "widget_hot_candidate_list_row";
 
-        // Candidate image
+        // Candidate image and name group
+        const candidateInfo = document.createElement("div");
+        candidateInfo.className = "widget_hot_candidate_list_candidate_info";
+
         if (item.candidateImage) {
           const img = document.createElement("img");
           img.className = "widget_hot_candidate_list_img";
           img.src = item.candidateImage;
           img.alt = item.name;
-          row.appendChild(img);
+          candidateInfo.appendChild(img);
         } else {
           const img = document.createElement("div");
           img.className = "widget_hot_candidate_list_img";
           img.style.background = "#f5f5f5";
-          row.appendChild(img);
+          candidateInfo.appendChild(img);
         }
 
         // Name
         const name = document.createElement("div");
         name.className = "widget_hot_candidate_list_name";
         name.textContent = item.name;
-        row.appendChild(name);
+
+        candidateInfo.appendChild(name);
+        row.appendChild(candidateInfo); // Append the grouped info to the row
 
         // Status (circular)
         const status = document.createElement("div");
@@ -386,7 +415,7 @@ function renderWidget() {
         status.className =
           "widget_hot_candidate_list_status " + (isWon ? "won" : "lost");
         status.textContent = isWon ? "W" : "L";
-        row.appendChild(status);
+        row.appendChild(status); // Append status to the row
 
         // Party
         if (item.party) {
@@ -412,10 +441,10 @@ function renderWidget() {
           pname.textContent = item.party.name;
           partyDiv.appendChild(pname);
 
-          row.appendChild(partyDiv);
+          row.appendChild(partyDiv); // Append party to the row
         }
 
-        list.appendChild(row);
+        list.appendChild(row); // Append the completed row to the list
       });
     } catch (e) {
       list.innerHTML =
