@@ -25,15 +25,16 @@ function addStyles() {
                 }
 
                 .wlw-widget-header {
-                    padding: 20px;
+                    padding: 10px;
                     border-bottom: 1px solid #e5e5e5;
                 }
 
                 .wlw-widget-title {
-                    font-size: 18px !important;
+                    font-size: 25px !important;
                     font-weight: 600;
                     color: #333;
-                    margin-bottom: 15px;
+                    text-align: center;
+                    margin-bottom: 9px;
                 }
 
                 .wlw-year-tabs {
