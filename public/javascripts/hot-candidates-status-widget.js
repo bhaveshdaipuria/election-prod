@@ -7,7 +7,7 @@ function injectStyles() {
   const style = document.createElement("style");
   style.textContent = `
     #hot-candidate-status-widget-pk * { box-sizing: border-box; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; }
-    #hot-candidate-status-widget-pk { max-width: 800px; margin: 20px auto; background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    #hot-candidate-status-widget-pk { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     .widget_hot_candidate_list_title { font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #000; }
     .widget_hot_candidate_list_filters { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
     .widget_hot_candidate_list_filter_label { font-size: 14px; color: #666; margin-right: 8px; }
