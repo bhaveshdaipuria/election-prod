@@ -1,3 +1,4 @@
+
 // Map Widget Class
 class MapWidget {
   constructor() {
@@ -3214,6 +3215,16 @@ class MapWidget {
     this.currentTippy.show();
   }
 
+  isMobile(){
+		return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
+generateLinkFromConstituencyName(constituencyName) {
+	const slug = encodeURIComponent(constituencyName.toLowerCase().replace(/\s+/g, '-'));
+	return `https://www.prabhatkhabar.com/bihar-election/${slug}-constituency`;
+  }
+  
+
   initializeMapInteractions() {
     const paths = document.querySelectorAll("path");
     if (paths) {
@@ -3229,9 +3240,21 @@ class MapWidget {
         });
 
         path.addEventListener("click", (e) => {
+
           if (this.isTouchDevice()) {
             this.showPopover(e, path);
           }
+		  if(this.isMobile()){
+			setTimeout(() => {
+				const constituencyName = path?.getAttribute('data-name'); 
+				if(!constituencyName) return;
+				window.open(this.generateLinkFromConstituencyName(constituencyName), "_blank")
+			}, 2000)
+		  } else {
+			const constituencyName = path?.getAttribute('data-name'); 
+			if(!constituencyName) return;
+			window.open(this.generateLinkFromConstituencyName(constituencyName), "_blank")
+		  }
         });
       });
     }
