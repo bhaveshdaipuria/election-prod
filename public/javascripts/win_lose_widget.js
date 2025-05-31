@@ -37,6 +37,7 @@ function addStyles() {
                 .wlw-year-tabs {
                     display: flex;
                     gap: 10px;
+                    justify-content: center;
                 }
 
                 .wlw-year-tab {
