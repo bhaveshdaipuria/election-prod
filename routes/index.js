@@ -1837,10 +1837,7 @@ router.get("/election/hot-candidate/result", async (req, res) => {
 		}
 		redis.set(key, {
 			success: true,
-			data: {
-				state: state,
-				availableYears: results,
-			},
+			data: results
 		});
 
 		res.status(200).json({
