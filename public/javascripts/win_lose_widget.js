@@ -30,7 +30,7 @@ function addStyles() {
                 }
 
                 .wlw-widget-title {
-                    font-size: 18px;
+                    font-size: 18px !important;
                     font-weight: 600;
                     color: #333;
                     margin-bottom: 15px;
@@ -173,7 +173,7 @@ function createWidget() {
   const header = document.createElement("div");
   header.className = "wlw-widget-header";
 
-  const title = document.createElement("h2");
+  const title = document.createElement("div");
   title.className = "wlw-widget-title";
   title.textContent = "जीत हार";
 
