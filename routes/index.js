@@ -1254,6 +1254,12 @@ router.get("/election/years/:state", async (req, res) => {
 				message: "State parameter is required",
 			});
 		}
+		const key = `election_state_years:${state}`;
+		const cachedResults = await redis.get(key);
+
+		if (cachedResults) {
+			return res.json(cachedResults);
+		}
 
 		const result = await TempElection.aggregate([
 			{
@@ -1280,12 +1286,22 @@ router.get("/election/years/:state", async (req, res) => {
 			},
 		]);
 
+		redis.set(key, {
+			success: true,
+			data: {
+				state: state,
+				availableYears: result[0].availableYears,
+			},
+		});
+
 		if (result.length === 0 || result[0].availableYears.length === 0) {
 			return res.status(404).json({
 				success: false,
 				message: "No election data found for the given state",
 			});
 		}
+
+		redis.set;
 
 		res.json({
 			success: true,
@@ -1588,6 +1604,13 @@ router.get("/election/hot-candidates", async (req, res) => {
 	try {
 		const { state, year } = req.query;
 
+		const key = `widget_bihar_hot_candidate_${state}_${year}`;
+		const cachedResults = await redis.get(key);
+
+		if (cachedResults) {
+			return res.json(cachedResults);
+		}
+
 		const result = await TempElection.aggregate([
 			// Match the election
 			{ $match: { state: state, year: Number(year) } },
@@ -1663,6 +1686,10 @@ router.get("/election/hot-candidates", async (req, res) => {
 				message: "Election not found",
 			});
 		}
+		redis.set(key, {
+			success: true,
+			data: result[0].hotCandidates,
+		});
 
 		return res.json({
 			success: true,
@@ -1686,6 +1713,22 @@ router.get("/election/hot-candidate/result", async (req, res) => {
 				success: false,
 				message: "Year parameter is required",
 			});
+		}
+
+		let key = `widget_bihar_hot_candidate_result_${year}`;
+
+		if (party) {
+			key += `_${party}`;
+		}
+		if (candidateName) {
+			key += `_${candidateName}`;
+		}
+
+		
+		const cachedResults = await redis.get(key);
+
+		if (cachedResults) {
+			return res.json(cachedResults);
 		}
 
 		const aggregationPipeline = [
@@ -1792,6 +1835,13 @@ router.get("/election/hot-candidate/result", async (req, res) => {
 				message: "No hot candidates found matching the criteria",
 			});
 		}
+		redis.set(key, {
+			success: true,
+			data: {
+				state: state,
+				availableYears: results,
+			},
+		});
 
 		res.status(200).json({
 			success: true,
