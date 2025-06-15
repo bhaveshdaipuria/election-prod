@@ -170,6 +170,7 @@ async function getCandidateElectionDetails(
 }
 
 /* GET home page. */
+//done
 router.get("/", function(req, res, next) {
 	if (!req.session.user) {
 		return res.redirect("/login");
@@ -307,6 +308,7 @@ router.get(
 	},
 );
 
+//done
 router.get("/login", function(req, res, next) {
 	if (req.session.user) {
 		return res.redirect("/temp-election-list");
@@ -1034,6 +1036,7 @@ router.get(
 	},
 );
 
+//done
 router.get("/election/candidates", async (req, res) => {
 	try {
 		const { state, constituencyId, year } = req.query;
@@ -1243,6 +1246,7 @@ router.get("/election/candidates", async (req, res) => {
 	}
 });
 
+//done
 router.get("/election/years/:state", async (req, res) => {
 	try {
 		const { state } = req.params;
@@ -1301,7 +1305,6 @@ router.get("/election/years/:state", async (req, res) => {
 			});
 		}
 
-		redis.set;
 
 		res.json({
 			success: true,
@@ -1319,6 +1322,7 @@ router.get("/election/years/:state", async (req, res) => {
 	}
 });
 
+//done
 router.get("/elections/state-elections", async (req, res) => {
 	try {
 		const { state } = req.query;
@@ -1454,6 +1458,7 @@ router.get("/elections/state-elections", async (req, res) => {
 	}
 });
 
+//done
 router.get("/elections/map/top-candidates", async (req, res) => {
 	try {
 		const { state, year } = req.query;
@@ -1600,6 +1605,7 @@ router.get("/elections/map/top-candidates", async (req, res) => {
 	}
 });
 
+//done
 router.get("/election/hot-candidates", async (req, res) => {
 	try {
 		const { state, year } = req.query;
@@ -1704,6 +1710,7 @@ router.get("/election/hot-candidates", async (req, res) => {
 	}
 });
 
+//done
 router.get("/election/hot-candidate/result", async (req, res) => {
 	try {
 		const { year, party, candidateName } = req.query;
